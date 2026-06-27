@@ -6,13 +6,13 @@ import { getDatabase } from 'firebase/database';
 // rules (configured separately in the Firebase console), not from keeping
 // this secret.
 const firebaseConfig = {
-  apiKey: 'AIzaSyDiFTRInuSC9l2iknMZFLkBAO_F1ac1Vmw',
-  authDomain: 'upwords-online.firebaseapp.com',
-  databaseURL: 'https://upwords-online-default-rtdb.europe-west1.firebasedatabase.app',
-  projectId: 'upwords-online',
-  storageBucket: 'upwords-online.firebasestorage.app',
-  messagingSenderId: '52618703418',
-  appId: '1:52618703418:web:fed4df7cf48b08e45cfb03'
+  apiKey: 'AIzaSyB3HfsxPoJDffBeP6Q2TgPBh6Y5EtsuffM',
+  authDomain: 'word-stack-941a1.firebaseapp.com',
+  databaseURL: 'https://word-stack-941a1-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId: 'word-stack-941a1',
+  storageBucket: 'word-stack-941a1.firebasestorage.app',
+  messagingSenderId: '994492399913',
+  appId: '1:994492399913:web:8139aaf938a17d98447738'
 };
 
 const app = initializeApp(firebaseConfig);
