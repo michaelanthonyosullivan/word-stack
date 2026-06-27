@@ -111,7 +111,7 @@ export function OnlineLobby({ onGameStart, onBack }: OnlineLobbyProps) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-12">
       <div className="max-w-md w-full glass-card rounded-3xl border border-white/8 shadow-2xl p-8 relative overflow-hidden">
-        <div className="absolute -top-20 -left-20 w-48 h-48 bg-red-600/8 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-20 -left-20 w-48 h-48 bg-teal-600/8 rounded-full blur-3xl pointer-events-none" />
 
         {stage !== 'in-lobby' && (
           <button onClick={onBack} className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white mb-5 transition-colors cursor-pointer">
@@ -121,7 +121,7 @@ export function OnlineLobby({ onGameStart, onBack }: OnlineLobbyProps) {
         )}
 
         {error && (
-          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl font-medium">
+          <div className="mb-4 p-3 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs rounded-xl font-medium">
             {error}
           </div>
         )}
@@ -129,14 +129,14 @@ export function OnlineLobby({ onGameStart, onBack }: OnlineLobbyProps) {
         {stage === 'choose' && (
           <div className="space-y-4 relative">
             <div className="text-center mb-4">
-              <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-red-700 shadow-xl shadow-red-600/25 mb-3 ring-1 ring-red-400/30">
+              <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 shadow-xl shadow-teal-600/25 mb-3 ring-1 ring-teal-400/30">
                 <Users className="h-7 w-7 text-white" />
               </div>
               <h2 className="font-serif-luxury text-2xl font-extrabold text-white">Play Online</h2>
               <p className="text-xs text-slate-400 mt-1">Create a room and share the code, or join a friend's game.</p>
             </div>
             <button onClick={() => { setPendingFlow('create'); setStage('create-name'); }}
-              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-red-600/20 active:scale-[0.98] transition-all text-sm cursor-pointer">
+              className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-teal-600/20 active:scale-[0.98] transition-all text-sm cursor-pointer">
               Create a Room
             </button>
             <button onClick={() => { setPendingFlow('join'); setStage('join-name'); }}
@@ -154,13 +154,13 @@ export function OnlineLobby({ onGameStart, onBack }: OnlineLobbyProps) {
               autoFocus
               value={name}
               onChange={(e) => setName(e.target.value.slice(0, 15))}
-              className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:border-red-500/60 transition-all text-sm font-medium"
+              className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500/60 transition-all text-sm font-medium"
               placeholder="Your Name"
             />
             <button
               onClick={() => { if (pendingFlow === 'create') handleCreate(); else setStage('join-code'); }}
               disabled={busy || !name.trim()}
-              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-red-600/20 active:scale-[0.98] transition-all text-sm disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer">
+              className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-teal-600/20 active:scale-[0.98] transition-all text-sm disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer">
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               <span>Continue</span>
             </button>
@@ -175,11 +175,11 @@ export function OnlineLobby({ onGameStart, onBack }: OnlineLobbyProps) {
               autoFocus
               value={joinCodeInput}
               onChange={(e) => setJoinCodeInput(e.target.value.toUpperCase().slice(0, 5))}
-              className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-4 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:border-red-500/60 transition-all text-2xl font-mono font-bold text-center tracking-[0.3em] uppercase"
+              className="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-4 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500/60 transition-all text-2xl font-mono font-bold text-center tracking-[0.3em] uppercase"
               placeholder="ABCDE"
             />
             <button onClick={handleJoin} disabled={busy || joinCodeInput.length < 4}
-              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-red-600/20 active:scale-[0.98] transition-all text-sm disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer">
+              className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-teal-600/20 active:scale-[0.98] transition-all text-sm disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer">
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               <span>Join Room</span>
             </button>
@@ -191,8 +191,8 @@ export function OnlineLobby({ onGameStart, onBack }: OnlineLobbyProps) {
             <div className="text-center">
               <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1.5">Room Code — share this</p>
               <button onClick={handleCopyCode}
-                className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-slate-950/80 border border-red-500/30 cursor-pointer hover:border-red-500/60 transition-all group">
-                <span className="text-2xl font-mono font-bold tracking-[0.3em] text-red-300">{roomCode}</span>
+                className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-slate-950/80 border border-teal-500/30 cursor-pointer hover:border-teal-500/60 transition-all group">
+                <span className="text-2xl font-mono font-bold tracking-[0.3em] text-teal-300">{roomCode}</span>
                 {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4 text-slate-500 group-hover:text-slate-300" />}
               </button>
             </div>
@@ -207,7 +207,7 @@ export function OnlineLobby({ onGameStart, onBack }: OnlineLobbyProps) {
 
             {isHost ? (
               <button onClick={handleStartGame} disabled={occupiedCount < 2}
-                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-red-600/20 active:scale-[0.98] transition-all text-sm disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer">
+                className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-teal-600/20 active:scale-[0.98] transition-all text-sm disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer">
                 <Play className="h-4 w-4 fill-current" />
                 <span>Start Game</span>
               </button>
@@ -250,7 +250,7 @@ function SeatRow({ seat, isMe, isHost, onSetAi, onOpen }: {
         <div className="min-w-0">
           <div className="text-xs font-bold text-slate-200 truncate">
             {seat.type === 'open' ? 'Open seat' : seat.name}
-            {isMe && <span className="text-red-400 font-normal"> (you)</span>}
+            {isMe && <span className="text-teal-400 font-normal"> (you)</span>}
           </div>
           {seat.type === 'ai' && <div className="text-[9px] text-slate-500 uppercase font-bold">{seat.aiLevel}</div>}
           {seat.type === 'open' && <div className="text-[9px] text-slate-600">Waiting for a player to join…</div>}
@@ -261,7 +261,7 @@ function SeatRow({ seat, isMe, isHost, onSetAi, onOpen }: {
         <div className="relative shrink-0">
           {seat.type === 'ai' ? (
             <button onClick={onOpen} title="Remove bot, open this seat"
-              className="text-slate-500 hover:text-red-400 transition-colors cursor-pointer">
+              className="text-slate-500 hover:text-teal-400 transition-colors cursor-pointer">
               <X className="h-4 w-4" />
             </button>
           ) : (
@@ -274,7 +274,7 @@ function SeatRow({ seat, isMe, isHost, onSetAi, onOpen }: {
             <div className="absolute right-0 top-8 z-10 bg-slate-900 border border-white/10 rounded-lg shadow-xl p-1.5 flex gap-1">
               {(['easy', 'medium', 'hard'] as const).map(level => (
                 <button key={level} onClick={() => { onSetAi(level); setShowAiPicker(false); }}
-                  className="px-2 py-1 rounded text-[9px] font-bold uppercase text-slate-300 hover:bg-red-600/20 hover:text-red-300 transition-all cursor-pointer">
+                  className="px-2 py-1 rounded text-[9px] font-bold uppercase text-slate-300 hover:bg-teal-600/20 hover:text-teal-300 transition-all cursor-pointer">
                   {level}
                 </button>
               ))}
@@ -283,7 +283,7 @@ function SeatRow({ seat, isMe, isHost, onSetAi, onOpen }: {
         </div>
       )}
       {isHost && seat.type === 'human' && !isMe && (
-        <button onClick={onOpen} title="Remove player" className="text-slate-500 hover:text-red-400 transition-colors cursor-pointer shrink-0">
+        <button onClick={onOpen} title="Remove player" className="text-slate-500 hover:text-teal-400 transition-colors cursor-pointer shrink-0">
           <X className="h-4 w-4" />
         </button>
       )}

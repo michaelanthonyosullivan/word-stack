@@ -142,7 +142,7 @@ export async function loadDictionary(onProgress?: (progress: number) => void): P
   } catch (error) {
     console.error('Error loading dictionary:', error);
     const fallback = new Trie();
-    const words = ['UPWORDS','GAME','PLAY','WORD','BOARD','TILES','STACK',
+    const words = ['GAME','PLAY','WORD','BOARD','TILES','STACK',
                    'HELLO','WORLD','CAT','BAT','CAB','COAT','DOG','THE','AND','FOR',
                    'ARE','BUT','NOT','YOU','ALL','CAN','HER','WAS','ONE','OUR'];
     words.forEach(w => { fallback.insert(w); fullWordSet.add(w); commonWordSet.add(w); });

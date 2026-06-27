@@ -15,16 +15,17 @@ interface BoardProps {
 export function Board({ board, placements, onCellClick, onDropTile, selectedLetter, hint, lastPlayPlacements }: BoardProps) {
   const [dragOverCell, setDragOverCell] = useState<string | null>(null);
 
-  const isCenter = (r: number, c: number) => (r === 4 || r === 5) && (c === 4 || c === 5);
+  const center = Math.floor(BOARD_SIZE / 2);
+  const isCenter = (r: number, c: number) => r === center && c === center;
   const getTempPlacement = (r: number, c: number) => placements.find(p => p.r === r && p.c === c);
   const getHintPlacement = (r: number, c: number) => hint?.placements.find(p => p.r === r && p.c === c) ?? null;
 
   return (
     <div className="w-full flex justify-center items-center py-2">
-      {/* Red Upwords board */}
+      {/* Board panel */}
       <div className="board-surface p-2.5 md:p-3.5 max-w-full aspect-square w-[94vw] sm:w-[86vw] md:w-[600px]">
         {/* Dark grid backing */}
-        <div className="w-full h-full grid grid-cols-10 grid-rows-10 gap-[3px] md:gap-1 bg-[#522028] p-2 md:p-2.5 rounded-xl">
+        <div className="w-full h-full grid grid-cols-7 grid-rows-7 gap-[3px] md:gap-1 bg-[#1A3D38] p-2 md:p-2.5 rounded-xl">
           {Array.from({ length: BOARD_SIZE }).map((_, r) =>
             Array.from({ length: BOARD_SIZE }).map((_, c) => {
               const cell = board[r][c];
@@ -84,7 +85,7 @@ export function Board({ board, placements, onCellClick, onDropTile, selectedLett
                   'from-[#E2D6C4] to-[#CFC0A4]',
                 ];
                 tileBg = tones[Math.min(displayHeight - 1, 4)];
-                tileText = 'text-[#B81C2C]'; // red letter
+                tileText = 'text-[#0D5C52]'; // deep teal letter
                 tileBorder = 'border-[#D8CEBE]';
               }
 
@@ -112,7 +113,7 @@ export function Board({ board, placements, onCellClick, onDropTile, selectedLett
                     displayHeight === 0
                       ? isCenterCell
                         ? 'border border-emerald-400/60 bg-emerald-900/30 pulse-glow-green'
-                        : 'border border-[#6B2229]/70 bg-[#6B2229]/35 hover:bg-[#7A2832]/55'
+                        : 'border border-[#1F4D45]/70 bg-[#1F4D45]/35 hover:bg-[#2A5F55]/55'
                       : 'border border-transparent'
                   } ${isDragTarget ? 'bg-sky-500/20 border-sky-400/60' : ''} ${
                     isLastPlay ? 'ring-2 ring-amber-400/80 z-[2]' : ''
@@ -121,7 +122,7 @@ export function Board({ board, placements, onCellClick, onDropTile, selectedLett
                   {/* Coordinate label on empty cell */}
                   {displayHeight === 0 && (
                     <span className={`absolute text-[7px] md:text-[8px] font-bold pointer-events-none select-none ${
-                      isCenterCell ? 'text-emerald-300/50' : 'text-red-200/30'
+                      isCenterCell ? 'text-emerald-300/50' : 'text-teal-200/30'
                     }`}>
                       {String.fromCharCode(65 + c)}{r + 1}
                     </span>
@@ -143,7 +144,7 @@ export function Board({ board, placements, onCellClick, onDropTile, selectedLett
                   )}
 
                   {displayHeight >= MAX_STACK && !isTemp && (
-                    <div className="absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full bg-red-500/80 pointer-events-none" title="Max height" />
+                    <div className="absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full bg-teal-500/80 pointer-events-none" title="Max height" />
                   )}
                 </button>
               );

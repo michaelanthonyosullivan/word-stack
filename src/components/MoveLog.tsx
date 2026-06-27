@@ -23,7 +23,7 @@ export function MoveLog({ history, players, onRemoveWord, onRewind, canRewindTo 
   return (
     <div className="w-full glass-card p-5 rounded-2xl border border-white/5 flex flex-col gap-3 flex-1 min-h-[200px]">
       <h3 className="text-xs uppercase tracking-wider text-slate-400 font-bold border-b border-white/5 pb-2 flex items-center gap-1.5 shrink-0">
-        <ScrollText className="h-4 w-4 text-red-500" />
+        <ScrollText className="h-4 w-4 text-teal-500" />
         <span>Game History</span>
       </h3>
       <div ref={containerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 scroll-smooth">
@@ -37,7 +37,7 @@ export function MoveLog({ history, players, onRemoveWord, onRewind, canRewindTo 
             const isHuman = player ? !player.isAi : false;
             const wordsFormed = (item.allWords && item.allWords.length > 0) ? item.allWords : [item.word];
 
-            let icon = <Play className="h-3.5 w-3.5 text-red-500" />;
+            let icon = <Play className="h-3.5 w-3.5 text-teal-500" />;
             let text = '';
 
             if (item.type === 'exchange') {
@@ -69,7 +69,7 @@ export function MoveLog({ history, players, onRemoveWord, onRewind, canRewindTo 
                           <span key={wIdx} className="inline-flex items-center gap-1">
                             {wIdx > 0 && <span className="text-slate-600 font-bold text-[10px]">+</span>}
                             <span className={`font-serif-luxury font-bold text-sm tracking-tight select-none ${
-                              removed ? 'text-slate-500 line-through' : 'text-red-300'
+                              removed ? 'text-slate-500 line-through' : 'text-teal-300'
                             }`}>
                               {word}
                             </span>
@@ -80,7 +80,7 @@ export function MoveLog({ history, players, onRemoveWord, onRewind, canRewindTo 
                                 <button
                                   onClick={() => onRemoveWord(word)}
                                   title={`Flag '${word}' as too obscure and remove it from the dictionary`}
-                                  className="text-slate-600 hover:text-red-400 transition-colors active:scale-90 cursor-pointer"
+                                  className="text-slate-600 hover:text-teal-400 transition-colors active:scale-90 cursor-pointer"
                                 >
                                   <ShieldX className="h-3 w-3" />
                                 </button>

@@ -37,7 +37,7 @@ export function Scoreboard({ players, currentTurn, isAiThinking, winnerId, gameE
           const isEditing = editingId === player.id;
 
           let cardClass = 'bg-slate-950/40 border-white/5';
-          if (isTurn) cardClass = 'bg-red-600/10 border-red-500/30 ring-1 ring-red-500/10 shadow-lg shadow-red-600/5';
+          if (isTurn) cardClass = 'bg-teal-600/10 border-teal-500/30 ring-1 ring-teal-500/10 shadow-lg shadow-teal-600/5';
           else if (isWinner) cardClass = 'bg-emerald-500/10 border-emerald-500/30 ring-1 ring-emerald-500/15';
 
           return (
@@ -45,7 +45,7 @@ export function Scoreboard({ players, currentTurn, isAiThinking, winnerId, gameE
               className={`flex items-center justify-between p-3.5 rounded-xl border transition-all duration-300 ${cardClass}`}>
               <div className="flex items-center gap-3 min-w-0">
                 <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${
-                  isTurn ? 'bg-red-600 text-white shadow-md shadow-red-600/20'
+                  isTurn ? 'bg-teal-600 text-white shadow-md shadow-teal-600/20'
                   : player.isAi ? 'bg-slate-800 text-slate-300'
                   : 'bg-blue-500/20 text-blue-300'
                 }`}>
@@ -60,10 +60,10 @@ export function Scoreboard({ players, currentTurn, isAiThinking, winnerId, gameE
                         onChange={(e) => setEditValue(e.target.value.slice(0, 15))}
                         onBlur={commitEdit}
                         onKeyDown={(e) => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') setEditingId(null); }}
-                        className="text-xs font-bold bg-slate-950 border border-red-500/40 rounded px-1.5 py-0.5 text-slate-100 w-24 outline-none focus:ring-1 focus:ring-red-500/50"
+                        className="text-xs font-bold bg-slate-950 border border-teal-500/40 rounded px-1.5 py-0.5 text-slate-100 w-24 outline-none focus:ring-1 focus:ring-teal-500/50"
                       />
                     ) : (
-                      <span className={`text-xs font-bold truncate ${isTurn ? 'text-red-400' : 'text-slate-100'}`}>
+                      <span className={`text-xs font-bold truncate ${isTurn ? 'text-teal-400' : 'text-slate-100'}`}>
                         {player.name}
                       </span>
                     )}
@@ -76,7 +76,7 @@ export function Scoreboard({ players, currentTurn, isAiThinking, winnerId, gameE
                       <button
                         onClick={() => startEditing(player)}
                         title="Rename player"
-                        className="text-slate-600 hover:text-red-400 transition-colors shrink-0 cursor-pointer"
+                        className="text-slate-600 hover:text-teal-400 transition-colors shrink-0 cursor-pointer"
                       >
                         <Pencil className="h-3 w-3" />
                       </button>
@@ -96,13 +96,13 @@ export function Scoreboard({ players, currentTurn, isAiThinking, winnerId, gameE
                   {player.score} <span className="text-[10px] text-slate-500 font-sans uppercase">pts</span>
                 </div>
                 {isTurn && isAiThinking && (
-                  <div className="flex items-center justify-end gap-1 text-[8px] text-red-400 font-bold uppercase tracking-wider mt-0.5">
+                  <div className="flex items-center justify-end gap-1 text-[8px] text-teal-400 font-bold uppercase tracking-wider mt-0.5">
                     <Sparkles className="h-2.5 w-2.5 animate-spin" />
                     <span>Thinking…</span>
                   </div>
                 )}
                 {isTurn && !isAiThinking && (
-                  <div className="text-[8px] text-red-400/70 font-bold uppercase tracking-wider mt-0.5">Your turn</div>
+                  <div className="text-[8px] text-teal-400/70 font-bold uppercase tracking-wider mt-0.5">Your turn</div>
                 )}
               </div>
             </div>

@@ -14,7 +14,7 @@ import {
 } from '../lib/upwords-engine';
 import { generateAllLegalMoves } from '../lib/upwords-ai';
 
-describe('Upwords Engine Tests', () => {
+describe('Word Stack Engine Tests', () => {
   beforeAll(async () => {
     // Mock fetch to load the local dictionary file in Vitest (Node)
     global.fetch = vi.fn().mockImplementation(() => {
@@ -38,9 +38,9 @@ describe('Upwords Engine Tests', () => {
 
   it('enforces the center square requirement on the first move', () => {
     const board = createEmptyBoard();
-    const rack = ['C', 'A', 'T', 'S', 'O', 'M', 'E'];
+    const rack = ['C', 'A', 'T', 'S', 'O', 'M'];
 
-    // Invalid placement: doesn't cover center (center is row index 4,5 and col index 4,5)
+    // Invalid placement: doesn't cover the center square (center is row/col index 3 on a 7x7 board)
     const play1 = [
       { r: 0, c: 0, letter: 'C' },
       { r: 0, c: 1, letter: 'A' },
@@ -48,13 +48,13 @@ describe('Upwords Engine Tests', () => {
     ];
     const validation1 = validatePlay(board, play1, true, rack);
     expect(validation1.isValid).toBe(false);
-    expect(validation1.error).toContain('center square');
+    expect(validation1.error).toContain('centre square');
 
-    // Valid placement: covers cell (4,4)
+    // Valid placement: covers the center cell (3,3)
     const play2 = [
-      { r: 4, c: 2, letter: 'C' },
-      { r: 4, c: 3, letter: 'A' },
-      { r: 4, c: 4, letter: 'T' }
+      { r: 3, c: 1, letter: 'C' },
+      { r: 3, c: 2, letter: 'A' },
+      { r: 3, c: 3, letter: 'T' }
     ];
     const validation2 = validatePlay(board, play2, true, rack);
     expect(validation2.isValid).toBe(true);
@@ -64,11 +64,11 @@ describe('Upwords Engine Tests', () => {
   it('calculates score correctly for flat and stacked words', () => {
     const board = createEmptyBoard();
     
-    // Play flat word CAT: 3 tiles, height 1. Score should be 3 * 2 = 6 points
+    // Play flat word CAT through the center cell (3,3): 3 tiles, height 1. Score should be 3 * 2 = 6 points
     const play1 = [
-      { r: 4, c: 3, letter: 'C' },
-      { r: 4, c: 4, letter: 'A' },
-      { r: 4, c: 5, letter: 'T' }
+      { r: 3, c: 2, letter: 'C' },
+      { r: 3, c: 3, letter: 'A' },
+      { r: 3, c: 4, letter: 'T' }
     ];
     const validation1 = validatePlay(board, play1, true, ['C', 'A', 'T']);
     expect(validation1.isValid).toBe(true);
@@ -83,7 +83,7 @@ describe('Upwords Engine Tests', () => {
     // 'B' will be at height 2, 'A' at height 1, 'T' at height 1.
     // Since it contains stacked letters, it should score 2 + 1 + 1 = 4 points.
     const play2 = [
-      { r: 4, c: 3, letter: 'B' }
+      { r: 3, c: 2, letter: 'B' }
     ];
     const validation2 = validatePlay(board, play2, false, ['B']);
     expect(validation2.isValid).toBe(true);
@@ -93,8 +93,8 @@ describe('Upwords Engine Tests', () => {
   it('rejects stacking identical letters', () => {
     const board = createEmptyBoard();
     const play1 = [
-      { r: 4, c: 4, letter: 'A' },
-      { r: 4, c: 5, letter: 'N' }
+      { r: 3, c: 3, letter: 'A' },
+      { r: 3, c: 4, letter: 'N' }
     ];
     for (const p of play1) {
       board[p.r][p.c].push({ letter: p.letter, placedBy: 0 });
@@ -102,7 +102,7 @@ describe('Upwords Engine Tests', () => {
 
     // Attempt to stack 'A' on top of 'A'
     const play2 = [
-      { r: 4, c: 4, letter: 'A' }
+      { r: 3, c: 3, letter: 'A' }
     ];
     const validation2 = validatePlay(board, play2, false, ['A']);
     expect(validation2.isValid).toBe(false);
@@ -112,8 +112,8 @@ describe('Upwords Engine Tests', () => {
   it('rejects stacking past the maximum height limit of 5', () => {
     const board = createEmptyBoard();
     
-    // Place a stack of height 5 at (4,4)
-    board[4][4] = [
+    // Place a stack of height 5 at (3,3)
+    board[3][3] = [
       { letter: 'A', placedBy: 0 },
       { letter: 'B', placedBy: 1 },
       { letter: 'C', placedBy: 2 },
@@ -121,23 +121,23 @@ describe('Upwords Engine Tests', () => {
       { letter: 'E', placedBy: 0 }
     ];
     
-    // Stack at (4,5) has height 1 to keep it connected
-    board[4][5] = [{ letter: 'N', placedBy: 0 }];
+    // Stack at (3,4) has height 1 to keep it connected
+    board[3][4] = [{ letter: 'N', placedBy: 0 }];
 
     // Attempt to stack 'F' on top of 'E' (height would become 6)
     const play = [
-      { r: 4, c: 4, letter: 'F' }
+      { r: 3, c: 3, letter: 'F' }
     ];
     const validation = validatePlay(board, play, false, ['F']);
     expect(validation.isValid).toBe(false);
-    expect(validation.error).toContain('exceeds maximum height');
+    expect(validation.error).toContain('maximum height');
   });
 
   it('rejects completely covering a word', () => {
     const board = createEmptyBoard();
     const play1 = [
-      { r: 4, c: 4, letter: 'A' },
-      { r: 4, c: 5, letter: 'T' }
+      { r: 3, c: 3, letter: 'A' },
+      { r: 3, c: 4, letter: 'T' }
     ];
     for (const p of play1) {
       board[p.r][p.c].push({ letter: p.letter, placedBy: 0 });
@@ -146,8 +146,8 @@ describe('Upwords Engine Tests', () => {
     // Attempt to place 'U' and 'P' directly on top of 'A' and 'T' to form 'UP'
     // This completely covers the existing word 'AT' and is illegal.
     const play2 = [
-      { r: 4, c: 4, letter: 'U' },
-      { r: 4, c: 5, letter: 'P' }
+      { r: 3, c: 3, letter: 'U' },
+      { r: 3, c: 4, letter: 'P' }
     ];
     const validation = validatePlay(board, play2, false, ['U', 'P']);
     expect(validation.isValid).toBe(false);
@@ -157,8 +157,8 @@ describe('Upwords Engine Tests', () => {
   it('finds legal moves and matches AI generation', () => {
     const board = createEmptyBoard();
     
-    // First move
-    const moves = generateAllLegalMoves(board, ['C', 'A', 'T', 'S', 'X', 'Y', 'Z'], true);
+    // First move, with a 6-letter rack matching the new rack size
+    const moves = generateAllLegalMoves(board, ['C', 'A', 'T', 'S', 'X', 'Y'], true);
     
     expect(moves.length).toBeGreaterThan(0);
     // Best move should be a high-scoring valid word covering center

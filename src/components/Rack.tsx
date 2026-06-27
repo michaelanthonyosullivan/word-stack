@@ -176,7 +176,7 @@ export function Rack({
   return (
     <div className="w-full max-w-[600px] flex flex-col items-center gap-3 glass-card p-4 rounded-2xl border border-white/5">
       {errorMsg && (
-        <div className="w-full flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl font-medium animate-popup">
+        <div className="w-full flex items-center gap-2 p-3 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs rounded-xl font-medium animate-popup">
           <AlertTriangle className="h-4 w-4 shrink-0" />
           <span>{errorMsg}</span>
         </div>
@@ -197,9 +197,9 @@ export function Rack({
           const isSelected = !exchangeMode && selectedTileIdx === idx;
           const isForExchange = exchangeMode && exchangeIdxs.has(idx);
 
-          let cls = 'bg-gradient-to-b from-[#FEFEFE] to-[#F0EAE0] border-[#D8CEBE] text-[#B81C2C] shadow-md';
+          let cls = 'bg-gradient-to-b from-[#FEFEFE] to-[#F0EAE0] border-[#D8CEBE] text-[#0D5C52] shadow-md';
           if (isSelected) {
-            cls = 'bg-gradient-to-b from-[#FFF8F0] to-[#F5E8D0] border-red-400 text-[#B81C2C] -translate-y-2.5 ring-4 ring-red-500/25 scale-110 shadow-lg shadow-red-500/20';
+            cls = 'bg-gradient-to-b from-[#FFF8F0] to-[#F5E8D0] border-teal-400 text-[#0D5C52] -translate-y-2.5 ring-4 ring-teal-500/25 scale-110 shadow-lg shadow-teal-500/20';
           } else if (isForExchange) {
             cls = 'bg-gradient-to-b from-orange-400/40 to-orange-500/40 border-orange-500 text-orange-200 scale-95 ring-2 ring-orange-500/40';
           }
@@ -291,7 +291,7 @@ export function Rack({
                 Pass
               </button>
               <button onClick={handleSubmit} disabled={!hasPlacements}
-                className="px-5 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-xl active:scale-95 transition-all text-xs disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1.5 shadow-lg shadow-red-600/15">
+                className="px-5 py-2 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold rounded-xl active:scale-95 transition-all text-xs disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1.5 shadow-lg shadow-teal-600/15">
                 <Send className="h-3.5 w-3.5" />
                 <span>Submit</span>
               </button>

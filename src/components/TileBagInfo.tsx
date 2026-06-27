@@ -14,8 +14,8 @@ export function TileBagInfo({ bag }: TileBagInfoProps) {
       <button onClick={() => setIsOpen(o => !o)}
         className="w-full flex items-center justify-between text-left cursor-pointer outline-none group">
         <div className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded-md bg-red-600/15 border border-red-500/20 flex items-center justify-center">
-            <span className="font-mono text-xs font-bold text-red-400">{bag.length}</span>
+          <div className="h-6 w-6 rounded-md bg-teal-600/15 border border-teal-500/20 flex items-center justify-center">
+            <span className="font-mono text-xs font-bold text-teal-400">{bag.length}</span>
           </div>
           <div>
             <h4 className="text-xs font-bold text-slate-300 group-hover:text-white transition-colors">Tile Bag</h4>
@@ -32,7 +32,7 @@ export function TileBagInfo({ bag }: TileBagInfoProps) {
             <div className="grid grid-cols-6 gap-1.5 max-h-[130px] overflow-y-auto pr-1">
               {sorted.map(letter => (
                 <div key={letter} className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-slate-950/60 border border-white/5">
-                  <span className="font-serif-luxury text-[10px] font-bold text-red-400">{letter}</span>
+                  <span className="font-serif-luxury text-[10px] font-bold text-teal-400">{letter}</span>
                   <span className="font-mono text-[9px] text-slate-400 mt-0.5">{counts[letter]}</span>
                 </div>
               ))}

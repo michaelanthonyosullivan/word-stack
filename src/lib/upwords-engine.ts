@@ -45,18 +45,14 @@ export interface GameState {
   winnerId: number | null;
 }
 
-export const BOARD_SIZE = 10;
+export const BOARD_SIZE = 7;
+export const RACK_SIZE = 6;
 export const MAX_STACK_HEIGHT = 5;
 
 export const TILE_DISTRIBUTION: { [letter: string]: number } = {
-  E: 8,
-  A: 7, I: 7, O: 7,
-  S: 6,
-  D: 5, L: 5, M: 5, N: 5, R: 5, T: 5, U: 5,
-  C: 4,
-  B: 3, F: 3, G: 3, H: 3, P: 3,
-  K: 2, W: 2, Y: 2,
-  J: 1, QU: 1, V: 1, X: 1, Z: 1
+  A: 4, B: 1, C: 1, D: 2, E: 5, F: 1, G: 1, H: 2, I: 4, J: 1,
+  K: 1, L: 2, M: 2, N: 3, O: 4, P: 1, Q: 1, R: 3, S: 3, T: 3,
+  U: 2, V: 1, W: 1, X: 1, Y: 1, Z: 1
 };
 
 export function createEmptyBoard(): Board {
@@ -140,9 +136,9 @@ export function validatePlay(
   for (const p of placements) tempBoard[p.r][p.c].push({ letter: p.letter, placedBy: -1 });
 
   if (isFirstMove) {
-    const centers = [{ r:4,c:4 },{ r:4,c:5 },{ r:5,c:4 },{ r:5,c:5 }];
-    if (!placements.some(p => centers.some(c => c.r === p.r && c.c === p.c)))
-      return { isValid: false, error: 'First word must cover one of the four centre squares.' };
+    const center = Math.floor(BOARD_SIZE / 2);
+    if (!placements.some(p => p.r === center && p.c === center))
+      return { isValid: false, error: 'First word must cover the centre square.' };
   } else {
     let connected = false;
     for (const p of placements) {
@@ -249,12 +245,9 @@ export function calculateScore(
     } else {
       for (const cell of wf.cells) wordScore += getBoardStackHeight(board, cell.r, cell.c);
     }
-    for (const cell of wf.cells) {
-      if (getBoardTopLetter(board, cell.r, cell.c) === 'QU') wordScore += 2;
-    }
     total += wordScore;
   }
-  if (placements.length === 7) total += 20;
+  if (placements.length === RACK_SIZE) total += 20;
   return total;
 }
 

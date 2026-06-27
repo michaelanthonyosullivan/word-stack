@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Board, Player, PlayPlacement, PlayHistoryItem, createEmptyBoard,
   generateShuffledBag, validatePlay, copyBoard, getBoardStackHeight,
-  BOARD_SIZE
+  BOARD_SIZE, RACK_SIZE
 } from '../lib/upwords-engine';
 import { generateAllLegalMoves, getAiPlay, CandidateMove } from '../lib/upwords-ai';
 import { loadDictionary, challengeWord as challengeWordInDictionary, removeWordFromDictionary } from '../lib/dictionary';
@@ -265,9 +265,9 @@ export function useUpwords(online?: OnlineConfig) {
     const bag = generateShuffledBag();
     const count = Math.max(1, Math.min(3, numAi));
     const newPlayers: Player[] = [
-      { id: 0, name: humanName.trim() || 'Player', score: 0, rack: bag.splice(0, 7), isAi: false },
+      { id: 0, name: humanName.trim() || 'Player', score: 0, rack: bag.splice(0, RACK_SIZE), isAi: false },
       ...DEFAULT_AI_NAMES.slice(0, count).map((name, idx) => ({
-        id: idx + 1, name, score: 0, rack: bag.splice(0, 7), isAi: true, aiLevel: botDifficulty
+        id: idx + 1, name, score: 0, rack: bag.splice(0, RACK_SIZE), isAi: true, aiLevel: botDifficulty
       }))
     ];
     setBoard(createEmptyBoard());
@@ -296,7 +296,7 @@ export function useUpwords(online?: OnlineConfig) {
     const bag = generateShuffledBag();
     const newPlayers: Player[] = roster.map((r, idx) => {
       const p: Player = {
-        id: idx, name: r.name.trim() || `Player ${idx + 1}`, score: 0, rack: bag.splice(0, 7), isAi: r.isAi
+        id: idx, name: r.name.trim() || `Player ${idx + 1}`, score: 0, rack: bag.splice(0, RACK_SIZE), isAi: r.isAi
       };
       if (r.isAi && r.aiLevel) p.aiLevel = r.aiLevel; // omit entirely for humans — Firebase rejects undefined
       return p;

@@ -86,7 +86,7 @@ export function CoachPanel({
               aria-checked={coachEnabled}
               title={coachEnabled ? 'Disable coach feedback' : 'Enable coach feedback'}
               className={`relative w-9 h-5 rounded-full transition-colors duration-200 shrink-0 cursor-pointer ${
-                coachEnabled ? 'bg-red-600' : 'bg-slate-700'
+                coachEnabled ? 'bg-teal-600' : 'bg-slate-700'
               }`}
             >
               <span className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-md transition-transform duration-200 ${
@@ -109,7 +109,7 @@ export function CoachPanel({
           </div>
           <p className="text-[10px] text-slate-300">
             Try playing{' '}
-            <span className="font-serif-luxury font-bold text-red-300 text-xs">{activeHint.word}</span>
+            <span className="font-serif-luxury font-bold text-teal-300 text-xs">{activeHint.word}</span>
             {' '}starting at{' '}
             <span className="font-bold text-slate-200 font-mono">
               {String.fromCharCode(65 + activeHint.placements[0].c)}{activeHint.placements[0].r + 1}
@@ -132,10 +132,10 @@ export function CoachPanel({
       {coachAnalysis && !showingPreview && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="glass-card max-w-md w-full rounded-3xl border border-white/10 shadow-2xl p-6 md:p-8 animate-popup relative overflow-hidden">
-            <div className="absolute -top-16 -left-16 w-36 h-36 bg-red-600/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -top-16 -left-16 w-36 h-36 bg-teal-600/5 rounded-full blur-3xl pointer-events-none" />
 
             <div className="text-center mb-6">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-red-600/10 border border-red-500/20 text-red-400 mb-3">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-teal-600/10 border border-teal-500/20 text-teal-400 mb-3">
                 <Award className="h-6 w-6" />
               </div>
               <h3 className="font-serif-luxury text-2xl font-bold text-white">Coach Feedback</h3>
@@ -149,7 +149,7 @@ export function CoachPanel({
                   <p className="text-emerald-400 font-bold text-sm mb-1.5">Excellent play!</p>
                   <p>
                     You played{' '}
-                    <span className="font-serif-luxury font-bold text-red-300 text-sm">{coachAnalysis.userPlay.word}</span>
+                    <span className="font-serif-luxury font-bold text-teal-300 text-sm">{coachAnalysis.userPlay.word}</span>
                     {' '}for{' '}
                     <span className="font-bold text-white font-mono">{coachAnalysis.userPlay.score} pts</span>
                     — the best available move!
@@ -174,23 +174,23 @@ export function CoachPanel({
                     <ArrowRight className="h-5 w-5 text-slate-600 rotate-90" />
                   </div>
 
-                  <div className="p-3 bg-red-500/5 border border-red-500/20 rounded-xl flex items-center justify-between gap-2">
+                  <div className="p-3 bg-teal-500/5 border border-teal-500/20 rounded-xl flex items-center justify-between gap-2">
                     <div>
-                      <div className="text-[10px] text-red-400 uppercase tracking-wider font-bold">Best Available</div>
-                      <div className="font-serif-luxury text-sm font-bold text-red-300 mt-0.5">
+                      <div className="text-[10px] text-teal-400 uppercase tracking-wider font-bold">Best Available</div>
+                      <div className="font-serif-luxury text-sm font-bold text-teal-300 mt-0.5">
                         {coachAnalysis.bestPlay?.word || '—'}
                       </div>
                     </div>
-                    <div className="font-mono text-base font-bold text-red-400">
+                    <div className="font-mono text-base font-bold text-teal-400">
                       {coachAnalysis.bestPlay?.score || 0}{' '}
-                      <span className="text-[9px] text-red-500/60 font-sans uppercase">pts</span>
+                      <span className="text-[9px] text-teal-500/60 font-sans uppercase">pts</span>
                     </div>
                   </div>
 
                   {coachAnalysis.bestPlay && coachAnalysis.userPlay && (
                     <div className="p-3 bg-slate-950/40 rounded-xl border border-white/5 text-center text-[11px]">
                       You missed{' '}
-                      <span className="font-bold text-red-400 font-mono">
+                      <span className="font-bold text-teal-400 font-mono">
                         +{coachAnalysis.bestPlay.score - coachAnalysis.userPlay.score} pts
                       </span>.{' '}
                       <span className="text-slate-400">Look for stacking opportunities to multiply your score.</span>
@@ -210,7 +210,7 @@ export function CoachPanel({
 
             <div className="flex justify-end pt-4 border-t border-white/5">
               <button onClick={handleClose}
-                className="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-xl active:scale-95 transition-all text-xs cursor-pointer">
+                className="px-6 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold rounded-xl active:scale-95 transition-all text-xs cursor-pointer">
                 Continue
               </button>
             </div>
@@ -229,7 +229,7 @@ export function CoachPanel({
               <div className="min-w-0">
                 <div className="text-[10px] text-emerald-400 uppercase tracking-wider font-bold">Best Move Highlighted</div>
                 <div className="text-xs text-slate-300 truncate">
-                  <span className="font-serif-luxury font-bold text-red-300">{coachAnalysis.bestPlay?.word}</span>
+                  <span className="font-serif-luxury font-bold text-teal-300">{coachAnalysis.bestPlay?.word}</span>
                   {' '}— {coachAnalysis.bestPlay?.score} pts
                 </div>
               </div>
@@ -240,7 +240,7 @@ export function CoachPanel({
                 Back
               </button>
               <button onClick={handleClose}
-                className="px-3 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-lg active:scale-95 transition-all text-xs">
+                className="px-3 py-2 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold rounded-lg active:scale-95 transition-all text-xs">
                 Continue
               </button>
             </div>
