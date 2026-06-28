@@ -46,12 +46,6 @@ export default function App() {
   const [syncError, setSyncError] = useState<string | null>(null);
   const [hostEndedGame, setHostEndedGame] = useState(false);
 
-  useEffect(() => {
-    if (room?.status === 'ended' && gameStarted && !isHost) {
-      setHostEndedGame(true);
-    }
-  }, [room?.status, gameStarted, isHost]);
-
   // Memoized specifically on the underlying JSON string — JSON.parse() always
   // returns a new object even when called twice on the identical string, so
   // without this, anything depending on these values would see a "new"
@@ -89,6 +83,12 @@ export default function App() {
     turnSnapshots, rewindToTurn,
     closeCoachAndAdvance, getPlacementsPreview
   } = useUpwords(online);
+
+  useEffect(() => {
+    if (room?.status === 'ended' && gameStarted && !isHost) {
+      setHostEndedGame(true);
+    }
+  }, [room?.status, gameStarted, isHost]);
 
   // Host-only: once the lobby marks the room "playing", initialize the shared
   // game state exactly once from the room's seat roster.
