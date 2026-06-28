@@ -50,9 +50,9 @@ export const RACK_SIZE = 6;
 export const MAX_STACK_HEIGHT = 5;
 
 export const TILE_DISTRIBUTION: { [letter: string]: number } = {
-  A: 7, B: 3, C: 4, D: 5, E: 8, F: 3, G: 3, H: 3, I: 7, J: 1,
-  K: 2, L: 5, M: 5, N: 5, O: 7, P: 3, QU: 1, R: 5, S: 6, T: 5,
-  U: 5, V: 1, W: 2, X: 1, Y: 2, Z: 1
+  A: 7, B: 3, C: 4, D: 5, E: 9, F: 3, G: 3, H: 3, I: 7, J: 1,
+  K: 1, L: 5, M: 5, N: 5, O: 7, P: 3, QU: 1, R: 5, S: 6, T: 5,
+  U: 6, V: 1, W: 1, X: 1, Y: 2, Z: 1
 };
 
 export function createEmptyBoard(): Board {
