@@ -240,7 +240,7 @@ export function Rack({
                 }
               }}
               style={{ touchAction: exchangeMode ? 'auto' : 'none' }}
-              className={`h-12 w-12 sm:h-11 sm:w-11 rounded-lg border-2 font-bold font-serif-luxury text-xl sm:text-lg transition-all duration-200 active:scale-95 cursor-pointer flex items-center justify-center select-none ${cls}`}
+              className={`h-12 w-12 sm:h-11 sm:w-11 rounded-lg border-2 font-bold font-serif-luxury transition-all duration-200 active:scale-95 cursor-pointer flex items-center justify-center select-none ${letter.length > 1 ? 'text-base sm:text-sm' : 'text-xl sm:text-lg'} ${cls}`}
             >
               {letter}
             </button>

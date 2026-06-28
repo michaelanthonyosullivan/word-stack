@@ -234,22 +234,59 @@ function searchHorizontalMoves(
             );
           }
         }
+
+        // Handle 'QU' tile (represents 'Q' then 'U' in Trie, occupying one cell)
+        if (char === 'Q' && currentRack.includes('QU')) {
+          const uNode = node.children['Q']?.children?.['U'];
+          if (uNode) {
+            if (isPerpendicularWordValid(board, r, c, 'QU')) {
+              const nextRack = removeLetter(currentRack, 'QU');
+              const nextPlacements = [...placements, { r, c, letter: 'QU' }];
+              const nextConnected = connected || isCellConnected(board, r, c);
+              backtrack(
+                r,
+                c + 1,
+                startCol,
+                uNode,
+                nextRack,
+                nextPlacements,
+                nextConnected
+              );
+            }
+          }
+        }
       }
     } else {
       // Square is occupied: we can either use it or stack on it
       const topLetter = getBoardTopLetter(board, r, c)!;
 
       // Option A: Use the letter on the board (no rack tiles consumed)
-      if (node.children[topLetter]) {
-        backtrack(
-          r,
-          c + 1,
-          startCol,
-          node.children[topLetter],
-          currentRack,
-          placements,
-          true // using board letter implies connection
-        );
+      if (topLetter !== 'QU') {
+        if (node.children[topLetter]) {
+          backtrack(
+            r,
+            c + 1,
+            startCol,
+            node.children[topLetter],
+            currentRack,
+            placements,
+            true // using board letter implies connection
+          );
+        }
+      } else {
+        // Handle using board 'QU' (matches 'Q' then 'U' in trie)
+        const uNode = node.children['Q']?.children?.['U'];
+        if (uNode) {
+          backtrack(
+            r,
+            c + 1,
+            startCol,
+            uNode,
+            currentRack,
+            placements,
+            true
+          );
+        }
       }
 
       // Option B: Stack a letter on top
@@ -272,6 +309,26 @@ function searchHorizontalMoves(
                 nextPlacements,
                 true // Stacking is a connection
               );
+            }
+          }
+
+          // Stack 'QU' tile
+          if (char === 'Q' && currentRack.includes('QU') && topLetter !== 'QU') {
+            const uNode = node.children['Q']?.children?.['U'];
+            if (uNode) {
+              if (isPerpendicularWordValid(board, r, c, 'QU')) {
+                const nextRack = removeLetter(currentRack, 'QU');
+                const nextPlacements = [...placements, { r, c, letter: 'QU' }];
+                backtrack(
+                  r,
+                  c + 1,
+                  startCol,
+                  uNode,
+                  nextRack,
+                  nextPlacements,
+                  true
+                );
+              }
             }
           }
         }

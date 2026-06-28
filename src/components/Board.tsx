@@ -132,7 +132,7 @@ export function Board({ board, placements, onCellClick, onDropTile, selectedLett
                   {displayLetter && (
                     <div className={`w-[90%] h-[90%] rounded-[3px] md:rounded-[5px] bg-gradient-to-b flex flex-col items-center justify-center font-bold relative transition-all duration-150 border ${tileBg} ${tileText} ${tileBorder} ${tileDepthClass}`}>
                       <div className="absolute inset-0 rounded-[3px] md:rounded-[5px] border border-white/25 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                      <span className="font-serif-luxury text-[11px] sm:text-sm md:text-lg leading-none tracking-tight select-none">
+                      <span className={`font-serif-luxury leading-none tracking-tight select-none ${displayLetter.length > 1 ? 'text-[8px] sm:text-xs md:text-base' : 'text-[11px] sm:text-sm md:text-lg'}`}>
                         {displayLetter}
                       </span>
                       {displayHeight > 1 && (
