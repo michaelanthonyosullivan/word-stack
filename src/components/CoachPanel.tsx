@@ -221,7 +221,7 @@ export function CoachPanel({
       {/* Compact floating panel while previewing the best move — board stays fully visible */}
       {coachAnalysis && showingPreview && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-[92vw] max-w-sm animate-popup">
-          <div className="glass-card rounded-2xl border border-emerald-500/30 shadow-2xl p-4 flex items-center justify-between gap-3">
+          <div className="glass-card rounded-2xl border border-emerald-500/30 shadow-2xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="h-9 w-9 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
                 <Eye className="h-4 w-4" />
@@ -234,13 +234,13 @@ export function CoachPanel({
                 </div>
               </div>
             </div>
-            <div className="flex gap-2 shrink-0">
+            <div className="flex gap-2 shrink-0 w-full sm:w-auto">
               <button onClick={handleTogglePreview}
-                className="px-3 py-2 rounded-lg border border-white/10 bg-slate-950/40 hover:bg-slate-950/80 text-xs font-semibold text-slate-300 hover:text-white transition-all active:scale-95">
+                className="flex-1 sm:flex-none px-3 py-2 rounded-lg border border-white/10 bg-slate-950/40 hover:bg-slate-950/80 text-xs font-semibold text-slate-300 hover:text-white transition-all active:scale-95 cursor-pointer">
                 Back
               </button>
               <button onClick={handleClose}
-                className="px-3 py-2 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold rounded-lg active:scale-95 transition-all text-xs">
+                className="flex-1 sm:flex-none px-3 py-2 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold rounded-lg active:scale-95 transition-all text-xs cursor-pointer">
                 Continue
               </button>
             </div>
