@@ -84,6 +84,12 @@ export default function App() {
     closeCoachAndAdvance, getPlacementsPreview
   } = useUpwords(online);
 
+  // A player who left mid-game and reconnects to the same room (same browser
+  // tab, since their seat is never freed) rejoins as a pure observer — their
+  // hasLeft flag persists in the players[] roster, so this is just checking
+  // their own entry.
+  const isObserver = !!(onlineInfo && players[myPlayerIndex]?.hasLeft);
+
   useEffect(() => {
     if (room?.status === 'ended' && gameStarted && !isHost) {
       setHostEndedGame(true);
@@ -371,6 +377,16 @@ export default function App() {
               onRewind={handleRewind} canRewindTo={(idx) => idx < turnSnapshots.length} />
           </div>
         </main>
+      )}
+
+      {/* Observer watermark — blocks interaction with the game area for a
+          player who left and reconnected to the same room */}
+      {isObserver && (
+        <div className="fixed top-20 inset-x-0 bottom-0 z-40 flex items-center justify-center overflow-hidden">
+          <div className="-rotate-[30deg] text-3xl sm:text-5xl md:text-6xl font-black text-white/10 uppercase tracking-widest select-none whitespace-nowrap">
+            Observing Only
+          </div>
+        </div>
       )}
 
       <footer className="shrink-0 py-3 text-center">
