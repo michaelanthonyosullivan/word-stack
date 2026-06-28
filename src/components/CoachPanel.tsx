@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { HelpCircle, Sparkles, Award, ArrowRight, Eye } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { HelpCircle, Sparkles, Award, ArrowRight, Eye, GripHorizontal } from 'lucide-react';
 import { CandidateMove } from '../lib/upwords-ai';
 import { PlayPlacement } from '../lib/upwords-engine';
 
@@ -28,6 +28,32 @@ export function CoachPanel({
   coachEnabled, onToggleCoach, isAiTurn, humanMovesReady, noHintAvailable
 }: CoachPanelProps) {
   const [showingPreview, setShowingPreview] = useState(false);
+
+  // Lets the player drag the best-move preview panel out of the way if it's
+  // sitting over the part of the board they actually need to see. Position
+  // persists for the rest of the session once moved — no need to redo it
+  // every turn.
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const dragStateRef = useRef<{ startX: number; startY: number; baseX: number; baseY: number } | null>(null);
+
+  const handleDragStart = (e: React.PointerEvent) => {
+    e.preventDefault();
+    dragStateRef.current = { startX: e.clientX, startY: e.clientY, baseX: dragOffset.x, baseY: dragOffset.y };
+
+    const handleMove = (ev: PointerEvent) => {
+      if (!dragStateRef.current) return;
+      const dx = ev.clientX - dragStateRef.current.startX;
+      const dy = ev.clientY - dragStateRef.current.startY;
+      setDragOffset({ x: dragStateRef.current.baseX + dx, y: dragStateRef.current.baseY + dy });
+    };
+    const handleUp = () => {
+      dragStateRef.current = null;
+      window.removeEventListener('pointermove', handleMove);
+      window.removeEventListener('pointerup', handleUp);
+    };
+    window.addEventListener('pointermove', handleMove);
+    window.addEventListener('pointerup', handleUp);
+  };
 
   const handleTogglePreview = () => {
     if (showingPreview) { onShowBestMovePreview(null); setShowingPreview(false); }
@@ -220,9 +246,16 @@ export function CoachPanel({
 
       {/* Compact floating panel while previewing the best move — board stays fully visible */}
       {coachAnalysis && showingPreview && (
-        <div className="fixed top-20 left-4 right-4 z-50 max-w-sm mx-auto animate-popup">
+        <div
+          className="fixed top-20 left-4 right-4 z-50 max-w-sm mx-auto animate-popup"
+          style={{ transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)` }}
+        >
           <div className="glass-card rounded-2xl border border-emerald-500/30 shadow-2xl p-4 flex flex-col gap-3">
-            <div className="flex items-center gap-2.5 w-full">
+            <div
+              onPointerDown={handleDragStart}
+              style={{ touchAction: 'none' }}
+              className="flex items-center gap-2.5 w-full cursor-grab active:cursor-grabbing select-none"
+            >
               <div className="h-9 w-9 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
                 <Eye className="h-4 w-4" />
               </div>
@@ -233,6 +266,7 @@ export function CoachPanel({
                   {' '}— {coachAnalysis.bestPlay?.score} pts
                 </div>
               </div>
+              <GripHorizontal className="h-4 w-4 text-slate-500 shrink-0" />
             </div>
             <button onClick={handleTogglePreview}
               className="w-full px-4 py-2 rounded-lg border border-white/10 bg-slate-950/40 hover:bg-slate-950/80 text-xs font-semibold text-slate-300 hover:text-white transition-all active:scale-95 cursor-pointer">
