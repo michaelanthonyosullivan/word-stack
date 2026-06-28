@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RefreshCw, BookOpen } from 'lucide-react';
 
 interface HeaderProps {
@@ -11,6 +11,23 @@ interface HeaderProps {
 
 export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
   const [showRules, setShowRules] = useState(false);
+
+  // Measuring window.innerHeight directly in JS rather than relying on any
+  // CSS viewport unit (vh/dvh) — this always reflects the true, current
+  // visible area in pixels, with no ambiguity about unit support, cascade
+  // order, or caching of which CSS rule is in effect.
+  const [viewportHeight, setViewportHeight] = useState(
+    typeof window !== 'undefined' ? window.innerHeight : 800
+  );
+  useEffect(() => {
+    const update = () => setViewportHeight(window.innerHeight);
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('orientationchange', update);
+    };
+  }, []);
 
   return (
     <header className="shrink-0 border-b border-white/5 bg-[#11161f]/90 backdrop-blur-md px-6 py-4 flex items-center justify-between z-10">
@@ -49,7 +66,10 @@ export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
 
       {showRules && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass-card max-w-2xl w-full modal-max-height overflow-y-auto rounded-2xl p-6 md:p-8 animate-popup shadow-2xl border border-white/10">
+          <div
+            className="glass-card max-w-2xl w-full overflow-y-auto rounded-2xl p-6 md:p-8 animate-popup shadow-2xl border border-white/10"
+            style={{ maxHeight: Math.floor(viewportHeight * 0.85) }}
+          >
             <div className="flex justify-between items-start mb-6">
               <h2 className="font-serif-luxury text-2xl md:text-3xl text-teal-400 font-bold">How to Play</h2>
               <button onClick={() => setShowRules(false)} className="text-slate-400 hover:text-white text-sm font-semibold p-1">✕</button>
