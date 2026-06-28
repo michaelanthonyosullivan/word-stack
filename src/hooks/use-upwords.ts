@@ -219,7 +219,8 @@ export function useUpwords(online?: OnlineConfig) {
   }, [online?.remoteState]);
 
   // ── Online sync: show coach feedback only on the screen of the player it's
-  // actually for — works for host and guest alike, since the host's own moves
+  // actually for, AND only if that player has the setting enabled on their
+  // own browser — works for host and guest alike, since the host's own moves
   // populate pendingFeedback locally and a guest's arrive via remoteState above.
   const lastShownFeedbackSeqRef = useRef<number | null>(null);
   useEffect(() => {
@@ -227,13 +228,14 @@ export function useUpwords(online?: OnlineConfig) {
     if (pendingFeedback.forPlayerId !== online.mySeatIndex) return;
     if (lastShownFeedbackSeqRef.current === pendingFeedback.moveSeq) return;
     lastShownFeedbackSeqRef.current = pendingFeedback.moveSeq;
+    if (!coachEnabled) return; // this player has feedback turned off on their own browser
     setCoachAnalysis({
       userPlay: { placements: [], score: pendingFeedback.userScore, word: pendingFeedback.userWord },
       bestPlay: pendingFeedback.bestWord
         ? ({ word: pendingFeedback.bestWord, score: pendingFeedback.bestScore, placements: [], wordsFormed: [] } as any)
         : null
     });
-  }, [pendingFeedback, online?.mySeatIndex]);
+  }, [pendingFeedback, online?.mySeatIndex, coachEnabled]);
 
   // ── Online sync: host receives and applies action requests from guests ────
   const lastProcessedRequestRef = useRef<string | null>(null);
@@ -460,25 +462,28 @@ export function useUpwords(online?: OnlineConfig) {
     setActiveRack(nextRack);
     setHint(null);
 
-    if (coachEnabled) {
-      if (online) {
-        // Don't block turn progression on a feedback popup in a shared game —
-        // publish it so the relevant player sees it, and move straight on.
-        setPendingFeedback({
-          forPlayerId: player.id,
-          userWord: allWords[0] || '',
-          userScore: result.score!,
-          bestWord: bestMoveRef.current?.word || '',
-          bestScore: bestMoveRef.current?.score ?? 0,
-          moveSeq: historyItem.turnIndex
-        });
-        advanceTurn(updatedPlayers, nextBag, 0);
-      } else {
-        setCoachAnalysis({
-          userPlay: { placements: activePlacements, score: result.score!, word: allWords[0] || '' },
-          bestPlay: bestMoveRef.current
-        });
-      }
+    if (online) {
+      // Always publish feedback for online games, regardless of the HOST's
+      // own local coachEnabled setting — this runs on whichever browser is
+      // host, executing moves on behalf of every player, so gating on the
+      // host's own preference here would incorrectly silence feedback for
+      // every other player too. Each player's own browser decides whether
+      // to actually display it, based on their own setting (see the
+      // dedicated effect below).
+      setPendingFeedback({
+        forPlayerId: player.id,
+        userWord: allWords[0] || '',
+        userScore: result.score!,
+        bestWord: bestMoveRef.current?.word || '',
+        bestScore: bestMoveRef.current?.score ?? 0,
+        moveSeq: historyItem.turnIndex
+      });
+      advanceTurn(updatedPlayers, nextBag, 0);
+    } else if (coachEnabled) {
+      setCoachAnalysis({
+        userPlay: { placements: activePlacements, score: result.score!, word: allWords[0] || '' },
+        bestPlay: bestMoveRef.current
+      });
     } else {
       advanceTurn(updatedPlayers, nextBag, 0);
     }
