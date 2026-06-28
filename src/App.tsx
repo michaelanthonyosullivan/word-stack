@@ -348,6 +348,7 @@ export default function App() {
               players={players} currentTurn={currentTurn}
               isAiThinking={isAiThinking} winnerId={winnerId} gameEnded={gameEnded}
               onRenamePlayer={renamePlayer}
+              canRename={(playerId) => !onlineInfo || isHost || myPlayerIndex === playerId}
             />
             <TileBagInfo bag={tileBag} />
             <CoachPanel

@@ -57,7 +57,8 @@ export type OnlineAction =
   | { type: 'rewind'; turnIndex: number }
   | { type: 'leave'; playerId: number }
   | { type: 'challengeWord'; word: string }
-  | { type: 'removeWord'; word: string };
+  | { type: 'removeWord'; word: string }
+  | { type: 'rename'; playerId: number; newName: string };
 
 export interface OnlineConfig {
   isHost: boolean;
@@ -264,6 +265,7 @@ export function useUpwords(online?: OnlineConfig) {
     else if (req.type === 'rewind') rewindToTurn(req.turnIndex);
     else if (req.type === 'challengeWord') challengeWord(req.word);
     else if (req.type === 'removeWord') removeWord(req.word);
+    else if (req.type === 'rename') renamePlayer(req.playerId, req.newName);
     else if (req.type === 'leave') {
       const updatedPlayers = players.map(p => p.id === req.playerId ? { ...p, hasLeft: true } : p);
       setPlayers(updatedPlayers);
@@ -393,6 +395,15 @@ export function useUpwords(online?: OnlineConfig) {
   const renamePlayer = (playerId: number, newName: string) => {
     const trimmed = newName.trim().slice(0, 15);
     if (!trimmed) return;
+    if (online && !online.isHost) {
+      // Guests may only rename themselves, and must route the change
+      // through the host — the players[] array is host-authoritative, so a
+      // purely local rename here would just get overwritten by the next
+      // synced update from the host.
+      if (playerId !== online.mySeatIndex) return;
+      online.onRequestAction?.({ type: 'rename', playerId, newName: trimmed });
+      return;
+    }
     setPlayers(prev => prev.map(p => p.id === playerId ? { ...p, name: trimmed } : p));
   };
 

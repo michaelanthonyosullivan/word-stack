@@ -9,9 +9,10 @@ interface ScoreboardProps {
   winnerId: number | null;
   gameEnded: boolean;
   onRenamePlayer: (playerId: number, newName: string) => void;
+  canRename: (playerId: number) => boolean;
 }
 
-export function Scoreboard({ players, currentTurn, isAiThinking, winnerId, gameEnded, onRenamePlayer }: ScoreboardProps) {
+export function Scoreboard({ players, currentTurn, isAiThinking, winnerId, gameEnded, onRenamePlayer, canRename }: ScoreboardProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState('');
 
@@ -78,7 +79,7 @@ export function Scoreboard({ players, currentTurn, isAiThinking, winnerId, gameE
                         left
                       </span>
                     )}
-                    {!isEditing && (
+                    {!isEditing && canRename(player.id) && (
                       <button
                         onClick={() => startEditing(player)}
                         title="Rename player"
