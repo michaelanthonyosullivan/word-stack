@@ -8,9 +8,10 @@ interface HeaderProps {
   winnerId: number | null;
   players: any[];
   roomCode?: string | null;
+  restartLabel?: string;
 }
 
-export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
+export function Header({ onRestart, gameStarted, roomCode, restartLabel }: HeaderProps) {
   const [showRules, setShowRules] = useState(false);
 
   // Measuring window.innerHeight directly in JS rather than relying on any
@@ -61,7 +62,7 @@ export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
           <button onClick={onRestart}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold shadow-lg shadow-teal-600/15 active:scale-95 transition-all whitespace-nowrap shrink-0">
             <RefreshCw className="h-3.5 w-3.5" />
-            <span>New Game</span>
+            <span>{restartLabel || 'New Game'}</span>
           </button>
         )}
       </div>

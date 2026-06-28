@@ -191,7 +191,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#11161f] text-slate-100">
-      <Header onRestart={handleRestart} gameStarted={gameStarted} winnerId={winnerId} players={players} roomCode={onlineInfo?.roomCode} />
+      <Header
+        onRestart={handleRestart} gameStarted={gameStarted} winnerId={winnerId} players={players}
+        roomCode={onlineInfo?.roomCode}
+        restartLabel={!onlineInfo ? 'New Game' : isHost ? 'Stop Game' : 'Leave Game'}
+      />
 
       {!gameStarted && !onlineInfo && preGameScreen === 'mode-select' ? (
         <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-12">
