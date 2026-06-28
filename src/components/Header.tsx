@@ -48,8 +48,8 @@ export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
       </div>
 
       {showRules && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto">
-          <div className="glass-card max-w-2xl w-full rounded-2xl p-6 md:p-8 animate-popup shadow-2xl border border-white/10 my-4">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="glass-card max-w-2xl w-full modal-max-height overflow-y-auto rounded-2xl p-6 md:p-8 animate-popup shadow-2xl border border-white/10">
             <div className="flex justify-between items-start mb-6">
               <h2 className="font-serif-luxury text-2xl md:text-3xl text-teal-400 font-bold">How to Play</h2>
               <button onClick={() => setShowRules(false)} className="text-slate-400 hover:text-white text-sm font-semibold p-1">✕</button>

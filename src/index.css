@@ -153,6 +153,18 @@ h1, h2, h3, .font-serif-luxury {
 ::-webkit-scrollbar-thumb { background: rgba(20, 184, 166, 0.3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(20, 184, 166, 0.55); }
 
+/* Modal max-height with a guaranteed-order dvh fallback — written directly
+   here (not as Tailwind utility classes) because Tailwind's internal class
+   sorting doesn't preserve declaration order, which matters for this kind
+   of progressive-enhancement fallback (the second valid declaration for the
+   same property wins; an unsupported unit is simply ignored, leaving the
+   earlier one in effect). dvh correctly accounts for mobile browser chrome,
+   which plain vh does not. */
+.modal-max-height {
+  max-height: 85vh;
+  max-height: 85dvh;
+}
+
 /* ── Mobile legibility pass ─────────────────────────────────────────────
    Many labels/badges across the app use Tailwind arbitrary-value text
    sizes (text-[9px], text-[10px], etc.) tuned for desktop. On phones
