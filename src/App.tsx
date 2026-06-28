@@ -11,7 +11,7 @@ import { MoveLog } from './components/MoveLog';
 import { CoachPanel } from './components/CoachPanel';
 import { Trophy, HelpCircle, Sparkles, RefreshCw, ShieldQuestion, CheckCircle2, XCircle } from 'lucide-react';
 import { CandidateMove } from './lib/upwords-ai';
-import { RoomData, subscribeToRoom, pushGameState, sendActionRequest, clearActionRequest, leaveSeat, setRoomStatus } from './lib/multiplayer';
+import { RoomData, subscribeToRoom, pushGameState, sendActionRequest, clearActionRequest, setRoomStatus } from './lib/multiplayer';
 
 // Bumped manually with each deploy — lets us confirm two different browsers
 // are actually running the same build before debugging "it doesn't work"
@@ -145,7 +145,11 @@ export default function App() {
             await sendActionRequest(onlineInfo.roomCode, {
               type: 'leave', playerId: myPlayerIndex, requestId: Math.random().toString(36).slice(2)
             });
-            await leaveSeat(onlineInfo.roomCode, onlineInfo.mySeatIndex);
+            // Deliberately NOT calling leaveSeat() here — mutating room.seats
+            // mid-game would shift the seat-index-to-player-index calculation
+            // for every player seated after this one, desyncing their identity
+            // from the (intentionally frozen) players[] array. The hasLeft
+            // flag set via the request above is the correct, safe record.
           } catch {}
           window.location.reload();
         }
