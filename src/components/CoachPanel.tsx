@@ -220,7 +220,7 @@ export function CoachPanel({
 
       {/* Compact floating panel while previewing the best move — board stays fully visible */}
       {coachAnalysis && showingPreview && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-[92vw] max-w-sm animate-popup">
+        <div className="fixed top-20 left-4 right-4 z-50 max-w-sm mx-auto animate-popup">
           <div className="glass-card rounded-2xl border border-emerald-500/30 shadow-2xl p-4 flex flex-col gap-3">
             <div className="flex items-center gap-2.5 w-full">
               <div className="h-9 w-9 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
