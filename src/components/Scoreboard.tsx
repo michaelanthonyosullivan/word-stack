@@ -37,7 +37,8 @@ export function Scoreboard({ players, currentTurn, isAiThinking, winnerId, gameE
           const isEditing = editingId === player.id;
 
           let cardClass = 'bg-slate-950/40 border-white/5';
-          if (isTurn) cardClass = 'bg-teal-600/10 border-teal-500/30 ring-1 ring-teal-500/10 shadow-lg shadow-teal-600/5';
+          if (player.hasLeft) cardClass = 'bg-slate-950/20 border-white/5 opacity-50';
+          else if (isTurn) cardClass = 'bg-teal-600/10 border-teal-500/30 ring-1 ring-teal-500/10 shadow-lg shadow-teal-600/5';
           else if (isWinner) cardClass = 'bg-emerald-500/10 border-emerald-500/30 ring-1 ring-emerald-500/15';
 
           return (
@@ -70,6 +71,11 @@ export function Scoreboard({ players, currentTurn, isAiThinking, winnerId, gameE
                     {player.isAi && !isEditing && (
                       <span className="text-[8px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-white/5 shrink-0">
                         {player.aiLevel}
+                      </span>
+                    )}
+                    {player.hasLeft && !isEditing && (
+                      <span className="text-[8px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-slate-800 text-slate-500 border border-white/5 shrink-0">
+                        left
                       </span>
                     )}
                     {!isEditing && (

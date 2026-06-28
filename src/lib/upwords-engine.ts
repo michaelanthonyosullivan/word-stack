@@ -15,6 +15,7 @@ export interface Player {
   rack: string[];
   isAi: boolean;
   aiLevel?: 'easy' | 'medium' | 'hard';
+  hasLeft?: boolean;
 }
 
 export interface PlayPlacement {

@@ -11,7 +11,7 @@ import { MoveLog } from './components/MoveLog';
 import { CoachPanel } from './components/CoachPanel';
 import { Trophy, HelpCircle, Sparkles, RefreshCw, ShieldQuestion, CheckCircle2, XCircle } from 'lucide-react';
 import { CandidateMove } from './lib/upwords-ai';
-import { RoomData, subscribeToRoom, pushGameState, sendActionRequest, clearActionRequest } from './lib/multiplayer';
+import { RoomData, subscribeToRoom, pushGameState, sendActionRequest, clearActionRequest, leaveSeat, setRoomStatus } from './lib/multiplayer';
 
 // Bumped manually with each deploy — lets us confirm two different browsers
 // are actually running the same build before debugging "it doesn't work"
@@ -44,6 +44,13 @@ export default function App() {
     : 0;
 
   const [syncError, setSyncError] = useState<string | null>(null);
+  const [hostEndedGame, setHostEndedGame] = useState(false);
+
+  useEffect(() => {
+    if (room?.status === 'ended' && gameStarted && !isHost) {
+      setHostEndedGame(true);
+    }
+  }, [room?.status, gameStarted, isHost]);
 
   // Memoized specifically on the underlying JSON string — JSON.parse() always
   // returns a new object even when called twice on the identical string, so
@@ -125,9 +132,28 @@ export default function App() {
     setSelectedTile(null);
   };
 
-  const handleRestart = () => {
-    if (window.confirm('Start a new game? Current progress will be lost.')) {
-      window.location.reload();
+  const handleRestart = async () => {
+    if (onlineInfo && room) {
+      if (isHost) {
+        if (window.confirm('End this game for everyone? All players will be returned to the start screen.')) {
+          try { await setRoomStatus(onlineInfo.roomCode, 'ended'); } catch {}
+          window.location.reload();
+        }
+      } else {
+        if (window.confirm("Leave this game? The other players will continue without you — your seat will show as vacated.")) {
+          try {
+            await sendActionRequest(onlineInfo.roomCode, {
+              type: 'leave', playerId: myPlayerIndex, requestId: Math.random().toString(36).slice(2)
+            });
+            await leaveSeat(onlineInfo.roomCode, onlineInfo.mySeatIndex);
+          } catch {}
+          window.location.reload();
+        }
+      }
+    } else {
+      if (window.confirm('Start a new game? Current progress will be lost.')) {
+        window.location.reload();
+      }
     }
   };
 
@@ -341,6 +367,20 @@ export default function App() {
       <footer className="shrink-0 py-3 text-center">
         <p className="text-[10px] italic text-slate-500">©MMXXVI Michael O'Sullivan</p>
       </footer>
+
+      {/* Host ended the game for everyone */}
+      {hostEndedGame && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="glass-card max-w-sm w-full rounded-3xl border border-white/10 shadow-2xl p-6 md:p-8 text-center">
+            <p className="font-serif-luxury text-xl font-bold text-white mb-2">Game Ended</p>
+            <p className="text-xs text-slate-400 mb-6">The host has ended this game for everyone.</p>
+            <button onClick={() => window.location.reload()}
+              className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold py-3 rounded-xl shadow-lg shadow-teal-600/20 active:scale-[0.98] transition-all text-sm">
+              Return to Start
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Game-over modal */}
       {gameEnded && winner && (

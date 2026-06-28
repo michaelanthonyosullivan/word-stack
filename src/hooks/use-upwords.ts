@@ -46,13 +46,18 @@ export interface SharedGameState {
   winnerId: number | null;
   lastPlayPlacements: { r: number; c: number }[];
   pendingFeedback?: MoveFeedback | null;
+  challengedWords?: string[];
+  removedWords?: string[];
 }
 
 export type OnlineAction =
   | { type: 'play'; placements: PlayPlacement[] }
   | { type: 'pass' }
   | { type: 'exchange'; tiles: string[] }
-  | { type: 'rewind'; turnIndex: number };
+  | { type: 'rewind'; turnIndex: number }
+  | { type: 'leave'; playerId: number }
+  | { type: 'challengeWord'; word: string }
+  | { type: 'removeWord'; word: string };
 
 export interface OnlineConfig {
   isHost: boolean;
@@ -90,6 +95,8 @@ export function useUpwords(online?: OnlineConfig) {
 
   const [hint, setHint] = useState<CandidateMove | null>(null);
   const [customWordsVersion, setCustomWordsVersion] = useState(0);
+  const [sharedChallengedWords, setSharedChallengedWords] = useState<string[]>([]);
+  const [sharedRemovedWords, setSharedRemovedWords] = useState<string[]>([]);
   const [coachAnalysis, setCoachAnalysis] = useState<{
     userPlay: { placements: PlayPlacement[]; score: number; word: string } | null;
     bestPlay: CandidateMove | null;
@@ -192,10 +199,11 @@ export function useUpwords(online?: OnlineConfig) {
     if (!online?.isHost || !gameStarted) return;
     online.onStateChange?.({
       board, players, tileBag, currentTurn, consecutivePasses, history,
-      gameEnded, winnerId, lastPlayPlacements, pendingFeedback
+      gameEnded, winnerId, lastPlayPlacements, pendingFeedback,
+      challengedWords: sharedChallengedWords, removedWords: sharedRemovedWords
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [board, players, tileBag, currentTurn, consecutivePasses, history, gameEnded, winnerId, lastPlayPlacements, pendingFeedback, gameStarted]);
+  }, [board, players, tileBag, currentTurn, consecutivePasses, history, gameEnded, winnerId, lastPlayPlacements, pendingFeedback, sharedChallengedWords, sharedRemovedWords, gameStarted]);
 
   // ── Online sync: guests mirror whatever the host publishes ─────────────────
   useEffect(() => {
@@ -212,6 +220,9 @@ export function useUpwords(online?: OnlineConfig) {
     setWinnerId(remote.winnerId);
     setLastPlayPlacements(remote.lastPlayPlacements);
     setPendingFeedback(remote.pendingFeedback ?? null);
+    if (remote.challengedWords) for (const w of remote.challengedWords) challengeWordInDictionary(w);
+    if (remote.removedWords) for (const w of remote.removedWords) removeWordFromDictionary(w);
+    setCustomWordsVersion(v => v + 1);
     setGameStarted(true);
     setPlacements([]);
     setActiveRack([...(remote.players[online.mySeatIndex]?.rack || [])]);
@@ -251,6 +262,15 @@ export function useUpwords(online?: OnlineConfig) {
     else if (req.type === 'pass') passTurn(true);
     else if (req.type === 'exchange') exchangeTiles(req.tiles, true);
     else if (req.type === 'rewind') rewindToTurn(req.turnIndex);
+    else if (req.type === 'challengeWord') challengeWord(req.word);
+    else if (req.type === 'removeWord') removeWord(req.word);
+    else if (req.type === 'leave') {
+      const updatedPlayers = players.map(p => p.id === req.playerId ? { ...p, hasLeft: true } : p);
+      setPlayers(updatedPlayers);
+      if (currentTurn === req.playerId) {
+        advanceTurn(updatedPlayers, tileBag, consecutivePasses);
+      }
+    }
 
     online.onActionRequestProcessed?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -572,7 +592,14 @@ export function useUpwords(online?: OnlineConfig) {
       endGame(currentPlayers, currentBag);
       return;
     }
-    setCurrentTurn((currentTurn + 1) % currentPlayers.length);
+    // Skip over any player who has left the game — their turn never comes up.
+    let next = (currentTurn + 1) % currentPlayers.length;
+    let guard = 0;
+    while (currentPlayers[next]?.hasLeft && guard < currentPlayers.length) {
+      next = (next + 1) % currentPlayers.length;
+      guard++;
+    }
+    setCurrentTurn(next);
     setConsecutivePasses(passesCount);
   };
 
@@ -704,14 +731,28 @@ export function useUpwords(online?: OnlineConfig) {
    */
   const challengeWord = (word: string): boolean => {
     const success = challengeWordInDictionary(word);
-    if (success) setCustomWordsVersion(v => v + 1);
+    if (success) {
+      setCustomWordsVersion(v => v + 1);
+      if (online?.isHost) {
+        setSharedChallengedWords(prev => prev.includes(word) ? prev : [...prev, word]);
+      } else if (online) {
+        online.onRequestAction?.({ type: 'challengeWord', word });
+      }
+    }
     return success;
   };
 
   /** Flag a bot-played word as too obscure and remove it from this browser's dictionary. */
   const removeWord = (word: string): boolean => {
     const success = removeWordFromDictionary(word);
-    if (success) setCustomWordsVersion(v => v + 1);
+    if (success) {
+      setCustomWordsVersion(v => v + 1);
+      if (online?.isHost) {
+        setSharedRemovedWords(prev => prev.includes(word) ? prev : [...prev, word]);
+      } else if (online) {
+        online.onRequestAction?.({ type: 'removeWord', word });
+      }
+    }
     return success;
   };
 
