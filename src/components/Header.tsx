@@ -48,8 +48,8 @@ export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
       </div>
 
       {showRules && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass-card max-w-2xl w-full max-h-[85vh] overflow-y-auto rounded-2xl p-6 md:p-8 animate-popup shadow-2xl border border-white/10">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto">
+          <div className="glass-card max-w-2xl w-full rounded-2xl p-6 md:p-8 animate-popup shadow-2xl border border-white/10 my-4">
             <div className="flex justify-between items-start mb-6">
               <h2 className="font-serif-luxury text-2xl md:text-3xl text-teal-400 font-bold">How to Play</h2>
               <button onClick={() => setShowRules(false)} className="text-slate-400 hover:text-white text-sm font-semibold p-1">✕</button>
@@ -105,6 +105,33 @@ export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
                     score for that turn still stands — it only stops the word being played again.
                   </li>
                 </ul>
+              </div>
+              <div>
+                <h3 className="text-white font-bold mb-1">Rewinding the Game</h3>
+                <p>
+                  Every entry in Game History has a small clock icon. Tap it to rewind the whole game — board,
+                  scores, racks, tile bag — back to exactly how things stood right before that move happened.
+                  This works for any turn, yours or an opponent's, and even after the game has technically
+                  ended, so you can go back and try something differently. Anything that happened after the
+                  point you rewind to is discarded, so you'll be asked to confirm first.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-white font-bold mb-1">Editing Player Names</h3>
+                <p>
+                  Tap the small pencil icon next to any name in the Scores panel — yours or an opponent's,
+                  human or AI — to rename them at any point during the game.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-white font-bold mb-1">Coach Assistance</h3>
+                <p>
+                  Before starting a game, the setup screen has a <strong>Coach Analysis</strong> toggle that
+                  controls whether you get feedback after each of your plays. You're not locked into that
+                  choice — during the game, the same switch appears under <strong>Post-Move Feedback</strong>
+                  in the Coach Assist panel, so you can turn it on or off whenever suits you, mid-game included.
+                  The on-demand <strong>Hint</strong> button works independently of this setting either way.
+                </p>
               </div>
               <div className="flex justify-end pt-4 border-t border-white/10">
                 <button onClick={() => setShowRules(false)}
