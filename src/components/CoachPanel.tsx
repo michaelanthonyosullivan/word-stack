@@ -221,13 +221,13 @@ export function CoachPanel({
       {/* Compact floating panel while previewing the best move — board stays fully visible */}
       {coachAnalysis && showingPreview && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-[92vw] max-w-sm animate-popup">
-          <div className="glass-card rounded-2xl border border-emerald-500/30 shadow-2xl p-4 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
+          <div className="glass-card rounded-2xl border border-emerald-500/30 shadow-2xl p-4 flex flex-col gap-3">
+            <div className="flex items-center gap-2.5 w-full">
               <div className="h-9 w-9 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
                 <Eye className="h-4 w-4" />
               </div>
-              <div className="min-w-0">
-                <div className="text-[10px] text-emerald-400 uppercase tracking-wider font-bold">Best Move Highlighted</div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] text-emerald-400 uppercase tracking-wider font-bold truncate">Best Move Highlighted</div>
                 <div className="text-xs text-slate-300 truncate">
                   <span className="font-serif-luxury font-bold text-teal-300">{coachAnalysis.bestPlay?.word}</span>
                   {' '}— {coachAnalysis.bestPlay?.score} pts
@@ -235,7 +235,7 @@ export function CoachPanel({
               </div>
             </div>
             <button onClick={handleTogglePreview}
-              className="px-4 py-2 rounded-lg border border-white/10 bg-slate-950/40 hover:bg-slate-950/80 text-xs font-semibold text-slate-300 hover:text-white transition-all active:scale-95 cursor-pointer shrink-0">
+              className="w-full px-4 py-2 rounded-lg border border-white/10 bg-slate-950/40 hover:bg-slate-950/80 text-xs font-semibold text-slate-300 hover:text-white transition-all active:scale-95 cursor-pointer">
               Back
             </button>
           </div>
