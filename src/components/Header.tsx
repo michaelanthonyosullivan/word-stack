@@ -70,9 +70,12 @@ export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
             className="glass-card max-w-2xl w-full overflow-y-auto rounded-2xl p-6 md:p-8 animate-popup shadow-2xl border border-white/10"
             style={{ maxHeight: Math.floor(viewportHeight * 0.85) }}
           >
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex justify-between items-start mb-2">
               <h2 className="font-serif-luxury text-2xl md:text-3xl text-teal-400 font-bold">How to Play</h2>
               <button onClick={() => setShowRules(false)} className="text-slate-400 hover:text-white text-sm font-semibold p-1">✕</button>
+            </div>
+            <div className="mb-4 p-2 bg-amber-500/20 border border-amber-500/40 rounded text-[10px] font-mono text-amber-300">
+              DEBUG v3: viewportHeight={viewportHeight} | maxHeight={Math.floor(viewportHeight * 0.85)}px
             </div>
             <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
               <div className="p-3 bg-teal-600/10 border border-teal-500/20 rounded-xl">
