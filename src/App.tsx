@@ -325,15 +325,24 @@ export default function App() {
               </div>
             )}
 
-            <Board
-              board={board}
-              placements={placements}
-              onCellClick={handleCellClick}
-              onDropTile={handleDropTile}
-              selectedLetter={selectedTile?.letter ?? null}
-              hint={bestMovePreview || hint}
-              lastPlayPlacements={lastPlayPlacements}
-            />
+            <div className="relative">
+              <Board
+                board={board}
+                placements={placements}
+                onCellClick={handleCellClick}
+                onDropTile={handleDropTile}
+                selectedLetter={selectedTile?.letter ?? null}
+                hint={bestMovePreview || hint}
+                lastPlayPlacements={lastPlayPlacements}
+              />
+              {isObserver && (
+                <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none z-40">
+                  <span className="-rotate-[30deg] text-3xl sm:text-5xl md:text-6xl font-black text-amber-400/60 uppercase tracking-widest select-none whitespace-nowrap drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
+                    Observing Only
+                  </span>
+                </div>
+              )}
+            </div>
 
             <Rack
               rack={activeRack}
@@ -379,14 +388,12 @@ export default function App() {
         </main>
       )}
 
-      {/* Observer watermark — blocks interaction with the game area for a
-          player who left and reconnected to the same room */}
+      {/* Observer interaction blocker — covers the whole game area (board,
+          rack, sidebar) so a player who left can watch but not act. The
+          visible watermark itself lives scoped to the board above, so it
+          stays centred on the board specifically regardless of screen size. */}
       {isObserver && (
-        <div className="fixed top-20 inset-x-0 bottom-0 z-40 flex items-center justify-center overflow-hidden">
-          <div className="-rotate-[30deg] text-3xl sm:text-5xl md:text-6xl font-black text-white/10 uppercase tracking-widest select-none whitespace-nowrap">
-            Observing Only
-          </div>
-        </div>
+        <div className="fixed top-20 inset-x-0 bottom-0 z-30" />
       )}
 
       <footer className="shrink-0 py-3 text-center">
