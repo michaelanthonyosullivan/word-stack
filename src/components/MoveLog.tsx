@@ -57,7 +57,7 @@ export function MoveLog({ history, players, onRemoveWord, onRewind, canRewindTo 
                   <div className="shrink-0">{icon}</div>
                   <div className="text-slate-300">
                     <span className={`font-bold ${isHuman ? 'text-blue-400' : 'text-slate-400'}`}>
-                      {item.playerName}
+                      {player?.name ?? item.playerName}
                     </span>{' '}
                     <span>{text}</span>
                   </div>

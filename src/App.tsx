@@ -355,7 +355,7 @@ export default function App() {
               <div className="mb-6 p-3 rounded-xl bg-teal-500/5 border border-teal-500/15">
                 <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">Final Play</p>
                 <p className="text-xs text-slate-300">
-                  <span className="font-bold text-slate-100">{finalMove.playerName}</span> played{' '}
+                  <span className="font-bold text-slate-100">{players.find(p => p.id === finalMove.playerId)?.name ?? finalMove.playerName}</span> played{' '}
                   <span className="font-serif-luxury font-bold text-teal-300 text-sm">
                     {finalMove.allWords?.join(' + ') || finalMove.word}
                   </span>{' '}
