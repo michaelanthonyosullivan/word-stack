@@ -169,7 +169,7 @@ export default function App() {
             <div className="absolute -top-20 -left-20 w-48 h-48 bg-teal-600/8 rounded-full blur-3xl pointer-events-none" />
             <div className="text-center mb-6 relative">
               <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 shadow-xl shadow-teal-600/25 mb-4 ring-1 ring-teal-400/30">
-                <span className="font-serif-luxury text-3xl font-bold text-white select-none">U</span>
+                <span className="font-serif-luxury text-3xl font-bold text-white select-none">W</span>
               </div>
               <p className="text-xs text-slate-400 max-w-xs mx-auto">Stack letters, build words, and outplay your opponents.</p>
             </div>
