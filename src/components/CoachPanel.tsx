@@ -247,10 +247,10 @@ export function CoachPanel({
       {/* Compact floating panel while previewing the best move — board stays fully visible */}
       {coachAnalysis && showingPreview && (
         <div
-          className="fixed top-20 left-4 right-4 z-50 max-w-sm mx-auto animate-popup"
+          className="fixed top-20 left-4 right-4 z-50 max-w-sm mx-auto"
           style={{ transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)` }}
         >
-          <div className="glass-card rounded-2xl border border-emerald-500/30 shadow-2xl p-4 flex flex-col gap-3">
+          <div className="glass-card rounded-2xl border border-emerald-500/30 shadow-2xl p-4 flex flex-col gap-3 animate-popup">
             <div
               onPointerDown={handleDragStart}
               style={{ touchAction: 'none' }}
