@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { RefreshCw, BookOpen } from 'lucide-react';
 
 interface HeaderProps {
@@ -30,6 +31,7 @@ export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
   }, []);
 
   return (
+    <>
     <header className="shrink-0 border-b border-white/5 bg-[#11161f]/90 backdrop-blur-md px-6 py-4 flex items-center justify-between z-10">
       <div className="flex items-center gap-3">
         <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center shadow-lg shadow-teal-600/25 ring-1 ring-teal-400/30">
@@ -63,8 +65,9 @@ export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
           </button>
         )}
       </div>
+    </header>
 
-      {showRules && (
+    {showRules && createPortal(
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div
             className="glass-card max-w-2xl w-full overflow-y-auto rounded-2xl p-6 md:p-8 animate-popup shadow-2xl border border-white/10"
@@ -165,7 +168,7 @@ export function Header({ onRestart, gameStarted, roomCode }: HeaderProps) {
             </div>
           </div>
         </div>
-      )}
-    </header>
+      , document.body)}
+    </>
   );
 }
