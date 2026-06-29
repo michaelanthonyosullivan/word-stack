@@ -1,0 +1,8 @@
+This is the code to use with chatbox AI and Claude
+
+zsh apply-changes.sh   # apply the changes
+npm run dev            # verify in browser
+git add .
+git commit -m "description of change"
+git push
+
