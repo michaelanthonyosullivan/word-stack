@@ -155,7 +155,19 @@ export default function App() {
 	setSelectedTile(null);
 	const res = submitPlay(hint.placements);
 	if (!res.success) {
-	  hint.placements.forEach(p => placeTileTemp(p.r, p.c, p.letter));
+	  // The hint can be stale (e.g. computed just before a rewind finished
+	  // recalculating legal moves) and reference tiles the player no longer
+	  // has. Re-placing it blindly leaves a phantom tile sitting on the
+	  // board that the rack count never accounted for, which then fails
+	  // every subsequent Submit with a confusing "rack does not contain"
+	  // error. Only re-place tiles that genuinely match what's left in hand.
+	  const available = [...activeRack];
+	  for (const p of hint.placements) {
+		const idx = available.indexOf(p.letter);
+		if (idx === -1) continue;
+		available.splice(idx, 1);
+		placeTileTemp(p.r, p.c, p.letter);
+	  }
 	}
   };
 

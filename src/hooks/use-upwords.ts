@@ -193,6 +193,12 @@ export function useUpwords(online?: OnlineConfig) {
     setCoachAnalysis(null);
     setGameEnded(false);
     setWinnerId(null);
+    // The hint backing ref isn't part of React state, so a rewind has to
+    // clear it explicitly — otherwise Get Hint / Accept Hint can briefly
+    // return a move computed against the pre-rewind rack/board until the
+    // debounced recalculation in calculateHumanMoves() catches up.
+    bestMoveRef.current = null;
+    allMovesRef.current = [];
   };
 
   // ── Online sync: host publishes state after every change ──────────────────
