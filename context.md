@@ -13,3 +13,4 @@
 **Change log:**
 - sync-v10-host-rewind — online multiplayer host rewind
 - sync-v11-mobile-hint — MobileHintBar above rack on mobile
+- sync-v12-turn-indicator — turn label + hint layout on mobile + desktop
