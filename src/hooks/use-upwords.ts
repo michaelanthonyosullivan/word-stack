@@ -119,6 +119,17 @@ export function useUpwords(online?: OnlineConfig) {
   const [coachEnabled, setCoachEnabled] = useState<boolean>(true);
   const [humanMovesReady, setHumanMovesReady] = useState<boolean>(false);
 
+  // Synchronous source of truth for "has this player left", separate from
+  // the hasLeft flag on the players array. setPlayers() is async, so any
+  // in-flight async work that captured an older `players` snapshot before
+  // a leave was processed — most notably the AI turn effect, which sits in
+  // a 1.2-2s setTimeout — would otherwise compute advanceTurn() against a
+  // snapshot that doesn't yet know someone left, and could hand the turn
+  // right back to them. A ref is updated the instant a leave is processed,
+  // so every advanceTurn() call sees it regardless of which snapshot the
+  // caller happened to be holding.
+  const leftPlayerIdsRef = useRef<Set<number>>(new Set());
+
   useEffect(() => {
     loadDictionary((p) => {
       setDictLoadingProgress(p);
@@ -283,6 +294,7 @@ export function useUpwords(online?: OnlineConfig) {
     else if (req.type === 'removeWord') removeWord(req.word);
     else if (req.type === 'rename') renamePlayer(req.playerId, req.newName);
     else if (req.type === 'leave') {
+      leftPlayerIdsRef.current.add(req.playerId);
       const updatedPlayers = players.map(p => p.id === req.playerId ? { ...p, hasLeft: true } : p);
       setPlayers(updatedPlayers);
       if (currentTurn === req.playerId) {
@@ -328,6 +340,7 @@ export function useUpwords(online?: OnlineConfig) {
     prevSnapshotTurnRef.current = null;
     bestMoveRef.current = null;
     allMovesRef.current = [];
+    leftPlayerIdsRef.current = new Set();
   };
 
   /** Host-only: initializes an online game from the room's seat roster (mixed humans + AI). */
@@ -360,6 +373,7 @@ export function useUpwords(online?: OnlineConfig) {
     bestMoveRef.current = null;
     allMovesRef.current = [];
     setHintsEnabledForGuestsState(true);
+    leftPlayerIdsRef.current = new Set();
   };
   const placeTileTemp = (r: number, c: number, letter: string) => {
     if (gameEnded || players[currentTurn]?.isAi) return;
@@ -619,9 +633,16 @@ export function useUpwords(online?: OnlineConfig) {
       return;
     }
     // Skip over any player who has left the game — their turn never comes up.
+    // Checked against both the snapshot's own hasLeft flag and the
+    // synchronous ref, since currentPlayers here may be a snapshot computed
+    // slightly before a concurrent leave was processed (see leftPlayerIdsRef
+    // above for why that matters).
     let next = (currentTurn + 1) % currentPlayers.length;
     let guard = 0;
-    while (currentPlayers[next]?.hasLeft && guard < currentPlayers.length) {
+    while (
+      guard < currentPlayers.length &&
+      (currentPlayers[next]?.hasLeft || leftPlayerIdsRef.current.has(currentPlayers[next]?.id))
+    ) {
       next = (next + 1) % currentPlayers.length;
       guard++;
     }
