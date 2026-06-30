@@ -11,11 +11,12 @@ interface MobileHintBarProps {
   isAiTurn: boolean;
   humanMovesReady: boolean;
   noHintAvailable: boolean;
+  hintsVisible: boolean;
 }
 
 export function MobileHintBar({
   onGetHint, onClearHint, onAcceptHint,
-  activeHint, hasPlacements, isAiTurn, humanMovesReady, noHintAvailable
+  activeHint, hasPlacements, isAiTurn, humanMovesReady, noHintAvailable, hintsVisible
 }: MobileHintBarProps) {
   return (
 	<div className="lg:hidden w-full max-w-[600px] flex items-center gap-2 px-1">
@@ -28,9 +29,10 @@ export function MobileHintBar({
 		</span>
 	  </div>
 
-	  {/* Right: hint area */}
+	  {/* Right: hint area — hidden entirely when the host has switched off
+	      hints for guests; the turn indicator on the left stays visible. */}
 	  <div className="flex-1 flex justify-end">
-		{activeHint ? (
+		{!hintsVisible ? null : activeHint ? (
 		  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/20 animate-popup max-w-[70%]">
 			<Sparkles className="h-3.5 w-3.5 text-blue-400 shrink-0" />
 			<span className="text-[10px] text-slate-300 flex-1 min-w-0 truncate">

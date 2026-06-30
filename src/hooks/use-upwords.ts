@@ -48,6 +48,11 @@ export interface SharedGameState {
   pendingFeedback?: MoveFeedback | null;
   challengedWords?: string[];
   removedWords?: string[];
+  // Host-controlled global toggle: when false, guests lose access to the
+  // Hint feature entirely. Optional (and treated as true when absent) so
+  // older in-flight games / rooms created before this field existed don't
+  // suddenly look like hints are disabled.
+  hintsEnabledForGuests?: boolean;
 }
 
 export type OnlineAction =
@@ -98,6 +103,9 @@ export function useUpwords(online?: OnlineConfig) {
   const [customWordsVersion, setCustomWordsVersion] = useState(0);
   const [sharedChallengedWords, setSharedChallengedWords] = useState<string[]>([]);
   const [sharedRemovedWords, setSharedRemovedWords] = useState<string[]>([]);
+  // Host-only global control over whether guests can use Hint at all. The
+  // host's own hint access is never gated by this — see getHint() below.
+  const [hintsEnabledForGuests, setHintsEnabledForGuestsState] = useState<boolean>(true);
   const [coachAnalysis, setCoachAnalysis] = useState<{
     userPlay: { placements: PlayPlacement[]; score: number; word: string } | null;
     bestPlay: CandidateMove | null;
@@ -207,10 +215,11 @@ export function useUpwords(online?: OnlineConfig) {
     online.onStateChange?.({
       board, players, tileBag, currentTurn, consecutivePasses, history,
       gameEnded, winnerId, lastPlayPlacements, pendingFeedback,
-      challengedWords: sharedChallengedWords, removedWords: sharedRemovedWords
+      challengedWords: sharedChallengedWords, removedWords: sharedRemovedWords,
+      hintsEnabledForGuests
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [board, players, tileBag, currentTurn, consecutivePasses, history, gameEnded, winnerId, lastPlayPlacements, pendingFeedback, sharedChallengedWords, sharedRemovedWords, gameStarted]);
+  }, [board, players, tileBag, currentTurn, consecutivePasses, history, gameEnded, winnerId, lastPlayPlacements, pendingFeedback, sharedChallengedWords, sharedRemovedWords, gameStarted, hintsEnabledForGuests]);
 
   // ── Online sync: guests mirror whatever the host publishes ─────────────────
   useEffect(() => {
@@ -227,6 +236,7 @@ export function useUpwords(online?: OnlineConfig) {
     setWinnerId(remote.winnerId);
     setLastPlayPlacements(remote.lastPlayPlacements);
     setPendingFeedback(remote.pendingFeedback ?? null);
+    setHintsEnabledForGuestsState(remote.hintsEnabledForGuests ?? true);
     if (remote.challengedWords) for (const w of remote.challengedWords) challengeWordInDictionary(w);
     if (remote.removedWords) for (const w of remote.removedWords) removeWordFromDictionary(w);
     setCustomWordsVersion(v => v + 1);
@@ -349,9 +359,8 @@ export function useUpwords(online?: OnlineConfig) {
     prevSnapshotTurnRef.current = null;
     bestMoveRef.current = null;
     allMovesRef.current = [];
+    setHintsEnabledForGuestsState(true);
   };
-
-  // ── Tile Placement ─────────────────────────────────────────────────────────
   const placeTileTemp = (r: number, c: number, letter: string) => {
     if (gameEnded || players[currentTurn]?.isAi) return;
     if (online && currentTurn !== online.mySeatIndex) return;
@@ -726,11 +735,22 @@ export function useUpwords(online?: OnlineConfig) {
     if (gameEnded) return false;
     if (online) {
       if (currentTurn !== online.mySeatIndex) return false;
+      // Belt-and-braces: the UI already hides the Hint button for guests
+      // when this is off, but check here too so a stale render or a direct
+      // call can't slip a hint through.
+      if (!online.isHost && !hintsEnabledForGuests) return false;
     } else if (players[currentTurn]?.isAi) {
       return false;
     }
     if (bestMoveRef.current) { setHint(bestMoveRef.current); return true; }
     return false;
+  };
+
+  /** Host-only: globally enable/disable the Hint feature for every guest. The
+   *  host's own hint access is untouched by this setting either way. */
+  const setHintsEnabledForGuests = (enabled: boolean) => {
+    if (online && !online.isHost) return;
+    setHintsEnabledForGuestsState(enabled);
   };
 
   const clearHint = () => setHint(null);
@@ -778,6 +798,7 @@ export function useUpwords(online?: OnlineConfig) {
     dictLoaded, dictLoadingProgress, gameStarted, isAiThinking,
     placements, activeRack, hint, coachAnalysis, lastPlayPlacements,
     coachEnabled, setCoachEnabled, customWordsVersion, humanMovesReady, hookError, turnSnapshots, rewindToTurn,
+    hintsEnabledForGuests, setHintsEnabledForGuests,
     startNewGame, startOnlineGame, placeTileTemp, removeTileTemp, recallTiles, shuffleRack, renamePlayer, reorderRack,
     submitPlay, passTurn, exchangeTiles, getHint, clearHint, challengeWord, removeWord,
     closeCoachAndAdvance, getPlacementsPreview, isFirstMoveOfGame

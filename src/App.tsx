@@ -69,6 +69,7 @@ export default function App() {
 	dictLoaded, dictLoadingProgress, gameStarted, isAiThinking,
 	placements, activeRack, hint, coachAnalysis, lastPlayPlacements,
 	coachEnabled, setCoachEnabled,
+	hintsEnabledForGuests, setHintsEnabledForGuests,
 	startNewGame, startOnlineGame, placeTileTemp, removeTileTemp, recallTiles, shuffleRack, renamePlayer, reorderRack,
 	submitPlay, passTurn, exchangeTiles, getHint, clearHint, challengeWord, removeWord, humanMovesReady, hookError,
 	turnSnapshots, rewindToTurn,
@@ -178,6 +179,13 @@ export default function App() {
 	}
   };
 
+  // Hints stay visible if it's a local (non-online) game, if I'm the host
+  // (the host's own access is never gated by their own toggle), or if the
+  // host hasn't turned guest hints off. Older synced payloads without the
+  // field default to enabled inside the hook itself.
+  const hintsVisible = !online || isHost || hintsEnabledForGuests;
+  const showGuestHintToggle = !!(online && isHost);
+
   // Shared hint props — passed to both MobileHintBar and CoachPanel to avoid duplication
   const hintProps = {
 	onGetHint: () => setNoHintAvailable(!getHint()),
@@ -188,6 +196,7 @@ export default function App() {
 	isAiTurn: online ? currentTurn !== online.mySeatIndex : !!players[currentTurn]?.isAi,
 	humanMovesReady,
 	noHintAvailable,
+	hintsVisible,
   };
 
   const preview = getPlacementsPreview();
@@ -383,6 +392,10 @@ export default function App() {
 			  isAiTurn={hintProps.isAiTurn}
 			  humanMovesReady={humanMovesReady}
 			  noHintAvailable={noHintAvailable}
+			  hintsVisible={hintsVisible}
+			  showGuestHintToggle={showGuestHintToggle}
+			  hintsEnabledForGuests={hintsEnabledForGuests}
+			  onToggleHintsForGuests={setHintsEnabledForGuests}
 			/>
 			<MoveLog history={history} players={players} onRemoveWord={removeWord}
 			  onRewind={handleRewind} canRewindTo={(idx) => idx < turnSnapshots.length} />

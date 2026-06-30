@@ -20,12 +20,17 @@ interface CoachPanelProps {
   isAiTurn: boolean;
   humanMovesReady: boolean;
   noHintAvailable: boolean;
+  hintsVisible: boolean;
+  showGuestHintToggle: boolean;
+  hintsEnabledForGuests: boolean;
+  onToggleHintsForGuests: (enabled: boolean) => void;
 }
 
 export function CoachPanel({
   onGetHint, onClearHint, onAcceptHint, activeHint, coachAnalysis,
   onCloseAnalysis, onShowBestMovePreview, hasPlacements,
-  coachEnabled, onToggleCoach, isAiTurn, humanMovesReady, noHintAvailable
+  coachEnabled, onToggleCoach, isAiTurn, humanMovesReady, noHintAvailable,
+  hintsVisible, showGuestHintToggle, hintsEnabledForGuests, onToggleHintsForGuests
 }: CoachPanelProps) {
   const [showingPreview, setShowingPreview] = useState(false);
 
@@ -79,31 +84,33 @@ export function CoachPanel({
 	  {/* Hint controls (hidden while coach modal is showing) */}
 	  {!coachAnalysis && (
 		<div className="w-full glass-card rounded-2xl border border-white/5 flex flex-col">
-		  <div className="p-4 flex items-center justify-between">
-			<div className="flex items-center gap-2.5">
-			  <div className="h-9 w-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-				<HelpCircle className="h-5 w-5" />
+		  {hintsVisible && (
+			<div className="p-4 flex items-center justify-between">
+			  <div className="flex items-center gap-2.5">
+				<div className="h-9 w-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+				  <HelpCircle className="h-5 w-5" />
+				</div>
+				<div>
+				  <h4 className="text-xs font-bold text-slate-200">Coach Assist</h4>
+				  <p className="text-[10px] text-slate-500">Stuck? Get a suggested play.</p>
+				</div>
 			  </div>
-			  <div>
-				<h4 className="text-xs font-bold text-slate-200">Coach Assist</h4>
-				<p className="text-[10px] text-slate-500">Stuck? Get a suggested play.</p>
-			  </div>
+			  {activeHint ? (
+				<button onClick={onClearHint}
+				  className="px-3 py-1.5 border border-white/10 rounded-lg bg-slate-950/40 hover:bg-slate-950/80 text-xs font-semibold text-slate-300 hover:text-white transition-all active:scale-95">
+				  Clear
+				</button>
+			  ) : (
+				<button onClick={onGetHint} disabled={hasPlacements || isAiTurn || !humanMovesReady}
+				  className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg active:scale-95 transition-all text-xs disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1 cursor-pointer">
+				  <Sparkles className="h-3.5 w-3.5 fill-current" />
+				  <span>Hint</span>
+				</button>
+			  )}
 			</div>
-			{activeHint ? (
-			  <button onClick={onClearHint}
-				className="px-3 py-1.5 border border-white/10 rounded-lg bg-slate-950/40 hover:bg-slate-950/80 text-xs font-semibold text-slate-300 hover:text-white transition-all active:scale-95">
-				Clear
-			  </button>
-			) : (
-			  <button onClick={onGetHint} disabled={hasPlacements || isAiTurn || !humanMovesReady}
-				className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg active:scale-95 transition-all text-xs disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1 cursor-pointer">
-				<Sparkles className="h-3.5 w-3.5 fill-current" />
-				<span>Hint</span>
-			  </button>
-			)}
-		  </div>
+		  )}
 
-		  {!activeHint && noHintAvailable && !isAiTurn && (
+		  {hintsVisible && !activeHint && noHintAvailable && !isAiTurn && (
 			<div className="px-4 pb-3 -mt-1">
 			  <p className="text-[10px] text-amber-400/90 italic">
 				No suggested play available for your current rack — try exchanging tiles or passing.
@@ -111,7 +118,7 @@ export function CoachPanel({
 			</div>
 		  )}
 
-		  <div className="flex items-center justify-between px-4 py-3 border-t border-white/5">
+		  <div className={`flex items-center justify-between px-4 py-3 ${hintsVisible ? 'border-t border-white/5' : ''}`}>
 			<div>
 			  <h5 className="text-[11px] font-bold text-slate-300">Post-Move Feedback</h5>
 			  <p className="text-[9px] text-slate-500">Show analysis popup after your plays</p>
@@ -130,11 +137,35 @@ export function CoachPanel({
 			  }`} />
 			</button>
 		  </div>
+
+		  {showGuestHintToggle && (
+			<div className="flex items-center justify-between px-4 py-3 border-t border-white/5">
+			  <div>
+				<h5 className="text-[11px] font-bold text-slate-300">Hints for Other Players</h5>
+				<p className="text-[9px] text-slate-500">
+				  {hintsEnabledForGuests ? 'Guests can request hints' : 'Guests cannot request hints'} — your own hint access is unaffected
+				</p>
+			  </div>
+			  <button
+				onClick={() => onToggleHintsForGuests(!hintsEnabledForGuests)}
+				role="switch"
+				aria-checked={hintsEnabledForGuests}
+				title={hintsEnabledForGuests ? 'Disable hints for guests' : 'Enable hints for guests'}
+				className={`relative w-9 h-5 rounded-full transition-colors duration-200 shrink-0 cursor-pointer ${
+				  hintsEnabledForGuests ? 'bg-teal-600' : 'bg-slate-700'
+				}`}
+			  >
+				<span className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-md transition-transform duration-200 ${
+				  hintsEnabledForGuests ? 'translate-x-4' : 'translate-x-0'
+				}`} />
+			  </button>
+			</div>
+		  )}
 		</div>
 	  )}
 
 	  {/* Active hint banner */}
-	  {activeHint && !coachAnalysis && (
+	  {hintsVisible && activeHint && !coachAnalysis && (
 		<div className="w-full bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 flex flex-col gap-1.5 animate-popup">
 		  <div className="flex justify-between items-center text-xs font-bold text-blue-400">
 			<span className="flex items-center gap-1.5">
