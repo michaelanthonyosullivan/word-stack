@@ -105,7 +105,7 @@ export function useUpwords(online?: OnlineConfig) {
   const [sharedRemovedWords, setSharedRemovedWords] = useState<string[]>([]);
   // Host-only global control over whether guests can use Hint at all. The
   // host's own hint access is never gated by this — see getHint() below.
-  const [hintsEnabledForGuests, setHintsEnabledForGuestsState] = useState<boolean>(true);
+  const [hintsEnabledForGuests, setHintsEnabledForGuestsState] = useState<boolean>(false);
   const [coachAnalysis, setCoachAnalysis] = useState<{
     userPlay: { placements: PlayPlacement[]; score: number; word: string } | null;
     bestPlay: CandidateMove | null;
@@ -372,7 +372,7 @@ export function useUpwords(online?: OnlineConfig) {
     prevSnapshotTurnRef.current = null;
     bestMoveRef.current = null;
     allMovesRef.current = [];
-    setHintsEnabledForGuestsState(true);
+    setHintsEnabledForGuestsState(false);
     leftPlayerIdsRef.current = new Set();
   };
   const placeTileTemp = (r: number, c: number, letter: string) => {
