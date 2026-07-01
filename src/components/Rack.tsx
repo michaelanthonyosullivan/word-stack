@@ -34,11 +34,15 @@ export function Rack({
   const tilesContainerRef = useRef<HTMLDivElement>(null);
   const rackRef = useRef(rack);
   const exchangeModeRef = useRef(exchangeMode);
+  const onDropTileRef = useRef(onDropTile);
+  const onReorderRef = useRef(onReorder);
   const [touchGhost, setTouchGhost] = useState<{ letter: string; x: number; y: number } | null>(null);
   const DRAG_THRESHOLD = 10; // px of finger movement before a tap becomes a drag
 
   useEffect(() => { rackRef.current = rack; }, [rack]);
   useEffect(() => { exchangeModeRef.current = exchangeMode; }, [exchangeMode]);
+  useEffect(() => { onDropTileRef.current = onDropTile; }, [onDropTile]);
+  useEffect(() => { onReorderRef.current = onReorder; }, [onReorder]);
 
   useEffect(() => {
     const container = tilesContainerRef.current;
@@ -98,12 +102,12 @@ export function Rack({
           if (cellEl) {
             const r = parseInt(cellEl.getAttribute('data-cell-r') || '', 10);
             const c = parseInt(cellEl.getAttribute('data-cell-c') || '', 10);
-            if (!isNaN(r) && !isNaN(c)) onDropTile(r, c, state.letter);
+            if (!isNaN(r) && !isNaN(c)) onDropTileRef.current(r, c, state.letter);
           } else {
             const tileEl = el?.closest('[data-tile-idx]') as HTMLElement | null;
             if (tileEl) {
               const targetIdx = parseInt(tileEl.getAttribute('data-tile-idx') || '', 10);
-              if (!isNaN(targetIdx) && targetIdx !== state.idx) onReorder(state.idx, targetIdx);
+              if (!isNaN(targetIdx) && targetIdx !== state.idx) onReorderRef.current(state.idx, targetIdx);
             }
           }
         }
@@ -130,7 +134,7 @@ export function Rack({
       container.removeEventListener('touchend', onTouchEnd);
       container.removeEventListener('touchcancel', onTouchCancel);
     };
-  }, [onDropTile, onReorder]);
+  }, []);
 
   const handleTileClick = (letter: string, idx: number) => {
     setErrorMsg(null);
